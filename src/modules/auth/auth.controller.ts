@@ -33,6 +33,34 @@ export class AuthController {
 
   // Sign in controller
   signIn = asyncHandler(async (req: Request, res: Response) => {
-    
+    const { user, accessToken, refreshToken } =
+      await this.authAppService.signIn(req.body);
+    res.cookie("accessToken", accessToken, cookieOptions.access);
+    res.cookie("refreshToken", refreshToken, cookieOptions.refresh);
+
+    appCache.set("refreshToken", refreshToken, {
+      ttl: 30 * 24 * 60 * 60 * 1000,
+    });
+
+    return sendResponse({
+      res,
+      statusCode: 200,
+      message: "User login successfully",
+      data: user,
+    });
+  });
+
+  // Sign out controller
+  signOut = asyncHandler(async (req: Request, res: Response) => {
+    console.log("user aa gya", req.body);
+    res.clearCookie("accessToken", cookieOptions.access);
+    res.clearCookie("refreshToken", cookieOptions.refresh);
+    appCache.delete("refreshToken");
+
+    return sendResponse({
+      res,
+      statusCode: 200,
+      message: "User logged out successfully",
+    });
   });
 }

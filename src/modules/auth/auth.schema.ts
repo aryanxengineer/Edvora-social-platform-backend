@@ -9,6 +9,7 @@ const passwordSchema = z
   .regex(/[0-9]/, "Must include number")
   .regex(/[^A-Za-z0-9]/, "Must include special character");
 
+// Sign up schema or schema validation
 export const signupSchema = z
   .object({
     fullname: z
@@ -62,4 +63,39 @@ export const signupSchema = z
     message: "Either email or phone number is required",
   })
 
+  .strict();
+
+// sign in schema or schema validation
+export const signInSchema = z
+  .object({
+    username: z
+      .string()
+      .trim()
+      .min(3)
+      .max(20)
+      .regex(/^[a-zA-Z0-9_]+$/, "Invalid username")
+      .transform((v) => v.toLowerCase())
+      .refine(
+        (v) => !["admin", "support", "root"].includes(v),
+        "Username not allowed"
+      )
+      .optional(),
+
+    email: z
+      .string()
+      .email("Invalid email")
+      .transform((v) => v.toLowerCase())
+      .optional(),
+
+    phoneNumber: z
+      .string()
+      .regex(/^\+?[1-9]\d{7,14}$/, "Invalid phone number")
+      .optional(),
+
+    password: passwordSchema,
+  })
+  .refine((data) => data.email || data.username || data.phoneNumber, {
+    path: ["email"],
+    message: "Either email or username or phone number is required",
+  })
   .strict();

@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import { UserModel } from "@/modules/user/user.model.js";
 import { ConflictError } from "@/common/errors/conflict.error.js";
 import { InternalServerError } from "@/common/errors/internal.error.js";
-import { logger } from "@/logger/index.js";
+import { UnauthorizedError } from "@/common/errors/unauthorized.error.js";
 
 export class AuthService {
   // Default constructor
@@ -34,7 +34,6 @@ export class AuthService {
         gender: data.gender,
         profilePicture: data.profilePicture,
       });
-
     } catch (err: any) {
       if (err.code === 11000) {
         throw new ConflictError("User already exists");
@@ -47,6 +46,43 @@ export class AuthService {
       id: user._id.toString(),
       username: user.username,
       email: user.email,
+    };
+  }
+
+  // SignInService
+  async signIn(data: any) {
+    const exists = await UserModel.findOne({
+      $or: [
+        { email: data.email },
+        { phoneNumber: data.phoneNumber },
+        { username: data.username },
+      ],
+    }).lean();
+
+    if (!exists) {
+      if (data.email.trim()) {
+        throw new UnauthorizedError("Email not found!");
+      } else if (data.phoneNumber.trim())
+        throw new UnauthorizedError("Number not found");
+      else if (data.username.trim())
+        throw new UnauthorizedError("Username not found");
+      else throw new UnauthorizedError();
+    }
+
+    let isValidPassword: boolean = false;
+
+    if(data.password.trim()) {
+      isValidPassword = await bcrypt.compare(data.password, exists.password);
+    }
+
+    if(!isValidPassword) {
+      throw new UnauthorizedError("Invalid password");
+    }
+
+    return {
+      id: exists._id.toString(),
+      username: exists.username,
+      email: exists.email,
     };
   }
 }

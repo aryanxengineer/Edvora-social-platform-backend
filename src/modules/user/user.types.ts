@@ -1,4 +1,4 @@
-export interface SignUpUser extends Document {
+export interface IUser extends Document {
   fullname: string;
   username: string;
   email?: string;
