@@ -5,23 +5,22 @@ import { AuthApplicationService } from "./auth.application.js";
 import { asyncHandler } from "@/common/utils/asyncHandler.js";
 import { sendResponse } from "@/common/utils/sendResponse.js";
 import { cookieOptions } from "@/common/http/cookieOptions.js";
-import { appCache } from "@/common/cache/index.js";
+import type { TokenService } from "@/common/auth/token.service.js";
 
 export class AuthController {
-  constructor(private readonly authAppService: AuthApplicationService) {}
+  constructor(
+    private readonly authAppService: AuthApplicationService,
+    private readonly tokenService: TokenService
+  ) {}
 
   // Sign up controller
   public signUp = asyncHandler(async (req: Request, res: Response) => {
-    // send data to the service
+    const device = req.headers["user-agent"] || "Unknown Device";
     const { user, accessToken, refreshToken } =
-      await this.authAppService.signUp(req.body);
+      await this.authAppService.signUp(req.body, device);
 
     res.cookie("accessToken", accessToken, cookieOptions.access);
     res.cookie("refreshToken", refreshToken, cookieOptions.refresh);
-
-    appCache.set("refreshToken", refreshToken, {
-      ttl: 30 * 24 * 60 * 60 * 1000,
-    });
 
     return sendResponse({
       res,
@@ -32,15 +31,14 @@ export class AuthController {
   });
 
   // Sign in controller
-  signIn = asyncHandler(async (req: Request, res: Response) => {
+  public signIn = asyncHandler(async (req: Request, res: Response) => {
+    const device = req.headers["user-agent"] || "Unknown Device";
+    console.log("Device Info:", device);
     const { user, accessToken, refreshToken } =
-      await this.authAppService.signIn(req.body);
+      await this.authAppService.signIn(req.body, device);
+
     res.cookie("accessToken", accessToken, cookieOptions.access);
     res.cookie("refreshToken", refreshToken, cookieOptions.refresh);
-
-    appCache.set("refreshToken", refreshToken, {
-      ttl: 30 * 24 * 60 * 60 * 1000,
-    });
 
     return sendResponse({
       res,
@@ -51,11 +49,17 @@ export class AuthController {
   });
 
   // Sign out controller
-  signOut = asyncHandler(async (req: Request, res: Response) => {
-    console.log("user aa gya", req.body);
+  public signOut = asyncHandler(async (req: Request, res: Response) => {
+    const refreshToken = req.cookies.refreshToken;
+    if (refreshToken) {
+      const session = await this.tokenService.verifyRefreshToken(refreshToken);
+      if (session?.sessionId) {
+        await this.authAppService.signOut(session.sessionId);
+      }
+    }
+
     res.clearCookie("accessToken", cookieOptions.access);
     res.clearCookie("refreshToken", cookieOptions.refresh);
-    appCache.delete("refreshToken");
 
     return sendResponse({
       res,

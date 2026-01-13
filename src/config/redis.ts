@@ -8,7 +8,7 @@ const redisClient = createClient({
     host: REDIS_HOST as string,
     port: Number(REDIS_PORT),
     tls: true,
-    servername: REDIS_HOST as string
+    servername: REDIS_HOST as string,
   },
 });
 

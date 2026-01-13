@@ -3,6 +3,7 @@ import { UserModel } from "@/modules/user/user.model.js";
 import { ConflictError } from "@/common/errors/conflict.error.js";
 import { InternalServerError } from "@/common/errors/internal.error.js";
 import { UnauthorizedError } from "@/common/errors/unauthorized.error.js";
+import { logger } from "@/logger/index.js";
 
 export class AuthService {
   // Default constructor
@@ -71,11 +72,12 @@ export class AuthService {
 
     let isValidPassword: boolean = false;
 
-    if(data.password.trim()) {
+    if (data.password.trim()) {
       isValidPassword = await bcrypt.compare(data.password, exists.password);
     }
 
-    if(!isValidPassword) {
+    if (!isValidPassword) {
+      logger.warn("Invalid password attempt for user:", exists._id.toString());
       throw new UnauthorizedError("Invalid password");
     }
 
