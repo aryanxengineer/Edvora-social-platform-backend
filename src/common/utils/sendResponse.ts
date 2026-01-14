@@ -1,5 +1,5 @@
 import { type Response } from "express";
-import { type ApiResponse } from "@/common/types/apiResponse.js";
+import { type ApiResponse } from "@/common/types/response.types.js";
 
 export interface SendResponseParams<T> {
   res: Response;
