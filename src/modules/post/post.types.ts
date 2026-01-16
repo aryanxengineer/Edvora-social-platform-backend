@@ -1,29 +1,20 @@
-interface User {
-  id: string;
-  username: string;
-  avatarUrl: string;
-}
+import { Types } from "mongoose";
 
-interface Comment {
-  id: string;
-  user: User;
-  text: string;
-  createdAt: string;
-}
-
-interface Post {
-  id: string;
-  user: User;
-  type: 'image' | 'video';
-  mediaUrl: string;           // Image/video file URL
-  caption?: string;           // Optional
-  likes: number;
-  comments: Comment[];
-  isLikedByCurrentUser: boolean;
-  isSavedByCurrentUser: boolean;
-  createdAt: string;
-  location?: string;
-  tags?: string[];            // hashtags
-  mentions?: string[];        // @usernames
-  accessibilityText?: string; // alt text for image/video
+export interface IPost {
+  _id: Types.ObjectId;
+  authorId: Types.ObjectId;
+  imageUrl: string;
+  likesCount: number;
+  commentsCount: number;
+  sharesCount: number;
+  savesCount: number;
+  caption?: string;
+  comments: Types.ObjectId[];
+  hashtags: string[];
+  mentions: Types.ObjectId[];
+  isReported: boolean;
+  reportCount: number;
+  deletedAt: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
 }

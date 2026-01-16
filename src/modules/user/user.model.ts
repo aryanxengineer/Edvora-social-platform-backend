@@ -17,7 +17,10 @@ const UserSchema = new Schema<IUser>(
       lowercase: true,
       trim: true,
     },
-    phoneNumber: { type: String, unique: true, sparse: true }, // sparse allows null/optional unique
+    comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
+    posts: [{ type: Schema.Types.ObjectId, ref: "Post" }],
+    reels: [{ type: Schema.Types.ObjectId, ref: "Reel" }],
+    phoneNumber: { type: String, unique: true, sparse: true },
     password: { type: String, required: true },
     dateOfBirth: { type: Date, required: true },
     profilePicture: { type: String, default: null },
@@ -25,7 +28,7 @@ const UserSchema = new Schema<IUser>(
     isVerified: { type: Boolean, default: false },
   },
   {
-    timestamps: true, // auto add createdAt, updatedAt
+    timestamps: true,
     versionKey: false,
   }
 );
