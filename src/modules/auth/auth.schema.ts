@@ -10,7 +10,7 @@ const passwordSchema = z
   .regex(/[^A-Za-z0-9]/, "Must include special character");
 
 // Sign up schema or schema validation
-export const signupSchema = z
+export const signupUserSchema = z
   .object({
     fullname: z
       .string()
@@ -66,7 +66,7 @@ export const signupSchema = z
   .strict();
 
 // sign in schema or schema validation
-export const signInSchema = z
+export const signinUserSchema = z
   .object({
     username: z
       .string()

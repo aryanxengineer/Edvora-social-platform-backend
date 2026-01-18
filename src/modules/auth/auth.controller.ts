@@ -1,23 +1,22 @@
 import type { Request, Response } from "express";
 
-import { AuthApplicationService } from "./auth.application.js";
+// Import Auth Service Type
+import type { AuthService } from "./auth.service.js";
 
+// Import Utility Functions
 import { asyncHandler } from "@/common/utils/asyncHandler.js";
 import { sendResponse } from "@/common/utils/sendResponse.js";
 import { cookieOptions } from "@/common/http/cookieOptions.js";
-import type { TokenService } from "@/common/auth/token.service.js";
 
+// Auth Controller Class
 export class AuthController {
-  constructor(
-    private readonly authAppService: AuthApplicationService,
-    private readonly tokenService: TokenService
-  ) {}
+  constructor(private readonly authService: AuthService) {}
 
   // Sign up controller
   public signUp = asyncHandler(async (req: Request, res: Response) => {
-    const device = req.headers["user-agent"] || "Unknown Device";
-    const { user, accessToken, refreshToken } =
-      await this.authAppService.signUp(req.body, device);
+    const { user, accessToken, refreshToken } = await this.authService.signUp(
+      req.body,
+    );
 
     res.cookie("accessToken", accessToken, cookieOptions.access);
     res.cookie("refreshToken", refreshToken, cookieOptions.refresh);
@@ -32,10 +31,9 @@ export class AuthController {
 
   // Sign in controller
   public signIn = asyncHandler(async (req: Request, res: Response) => {
-    const device = req.headers["user-agent"] || "Unknown Device";
-    console.log("Device Info:", device);
-    const { user, accessToken, refreshToken } =
-      await this.authAppService.signIn(req.body, device);
+    const { user, accessToken, refreshToken } = await this.authService.signIn(
+      req.body,
+    );
 
     res.cookie("accessToken", accessToken, cookieOptions.access);
     res.cookie("refreshToken", refreshToken, cookieOptions.refresh);
@@ -50,14 +48,6 @@ export class AuthController {
 
   // Sign out controller
   public signOut = asyncHandler(async (req: Request, res: Response) => {
-    const refreshToken = req.cookies.refreshToken;
-    if (refreshToken) {
-      const session = await this.tokenService.verifyRefreshToken(refreshToken);
-      if (session?.sessionId) {
-        await this.authAppService.signOut(session.sessionId);
-      }
-    }
-
     res.clearCookie("accessToken", cookieOptions.access);
     res.clearCookie("refreshToken", cookieOptions.refresh);
 

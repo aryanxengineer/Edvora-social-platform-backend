@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { AuthService } from "./auth.service.js";
+import { AuthRepository } from "./auth.repository.js";
 import { TokenService } from "@/common/auth/token.service.js";
 import { AuthController } from "./auth.controller.js";
-import { AuthApplicationService } from "./auth.application.js";
+import { AuthService } from "./auth.service.js";
 
 import {
   signInUserValidation,
@@ -12,14 +12,14 @@ import {
 const authRouter = Router();
 
 // Dependency Injections for controller
-const authService = new AuthService();
 const tokenService = new TokenService();
+const authRepository = new AuthRepository();
 
-const authAppService = new AuthApplicationService(authService, tokenService);
-const controller = new AuthController(authAppService, tokenService);
+const authService = new AuthService(authRepository, tokenService);
+const authController = new AuthController(authService);
 
-authRouter.post("/signup", signupUserValidation, controller.signUp);
-authRouter.post("/signin", signInUserValidation, controller.signIn);
-authRouter.post("/signout", controller.signOut);
+authRouter.post("/signup", signupUserValidation, authController.signUp);
+authRouter.post("/signin", signInUserValidation, authController.signIn);
+authRouter.post("/signout", authController.signOut);
 
 export default authRouter;

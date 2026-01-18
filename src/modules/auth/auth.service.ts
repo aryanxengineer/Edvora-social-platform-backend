@@ -1,90 +1,39 @@
-import bcrypt from "bcrypt";
-import { UserModel } from "@/modules/user/user.model.js";
-import { ConflictError } from "@/common/errors/conflict.error.js";
-import { InternalServerError } from "@/common/errors/internal.error.js";
-import { UnauthorizedError } from "@/common/errors/unauthorized.error.js";
-import { logger } from "@/logger/index.js";
+import type { TokenService } from "@/common/auth/token.service.js";
+
+import type { SignInUser, SignUpUser } from "./auth.types.js";
+import type { AuthRepository } from "./auth.repository.js";
 
 export class AuthService {
-  // Default constructor
-  constructor() {}
+  constructor(
+    private readonly authRepository: AuthRepository,
+    private readonly tokenService: TokenService,
+  ) {}
 
-  async signUp(data: any) {
-    // Check existing user
-    const exists = await UserModel.findOne({
-      email: data.email,
-    }).lean();
+  async signUp(input: SignUpUser, device?: string) {
+    const user = await this.authRepository.signUp(input);
 
-    if (exists) {
-      if (exists.email === data.email) {
-        throw new ConflictError("Email already exists");
-      }
-    }
+    const accessToken = this.tokenService.generateAccessToken({
+      userId: user.id,
+    });
 
-    const hashedPassword = await bcrypt.hash(data.password, 12);
+    const { refreshToken } = await this.tokenService.generateRefreshToken({
+      userId: user.id,
+    });
 
-    let user;
-    try {
-      user = await UserModel.create({
-        fullname: data.fullname,
-        username: data.username,
-        email: data.email,
-        password: hashedPassword,
-        phoneNumber: data.phoneNumber,
-        dateOfBirth: data.dateOfBirth,
-        gender: data.gender,
-        profilePicture: data.profilePicture,
-      });
-    } catch (err: any) {
-      if (err.code === 11000) {
-        throw new ConflictError("User already exists");
-      }
-
-      throw new InternalServerError();
-    }
-
-    return {
-      id: user._id.toString(),
-      username: user.username,
-      email: user.email,
-    };
+    return { user, accessToken, refreshToken };
   }
 
-  // SignInService
-  async signIn(data: any) {
-    const exists = await UserModel.findOne({
-      $or: [
-        { email: data.email },
-        { phoneNumber: data.phoneNumber },
-        { username: data.username },
-      ],
-    }).lean();
+  async signIn(input: SignInUser, device?: string) {
+    const user = await this.authRepository.signIn(input);
 
-    if (!exists) {
-      if (data.email.trim()) {
-        throw new UnauthorizedError("Email not found!");
-      } else if (data.phoneNumber.trim())
-        throw new UnauthorizedError("Number not found");
-      else if (data.username.trim())
-        throw new UnauthorizedError("Username not found");
-      else throw new UnauthorizedError();
-    }
+    const accessToken = this.tokenService.generateAccessToken({
+      userId: user.id,
+    });
 
-    let isValidPassword: boolean = false;
+    const { refreshToken } = await this.tokenService.generateRefreshToken({
+      userId: user.id,
+    });
 
-    if (data.password.trim()) {
-      isValidPassword = await bcrypt.compare(data.password, exists.password);
-    }
-
-    if (!isValidPassword) {
-      logger.warn("Invalid password attempt for user:", exists._id.toString());
-      throw new UnauthorizedError("Invalid password");
-    }
-
-    return {
-      id: exists._id.toString(),
-      username: exists.username,
-      email: exists.email,
-    };
+    return { user, accessToken, refreshToken };
   }
 }

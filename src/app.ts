@@ -12,7 +12,7 @@ import cookieParser from "cookie-parser";
 
 const app: Express = express();
 
-// applyHelmet(app);
+// applyHelmet(app);  x
 // applyCors(app);
 // applyMongoSanitize(app);
 
