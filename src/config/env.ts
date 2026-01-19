@@ -6,6 +6,7 @@ config({
 
 export const {
   PORT,
+  REDIS_URL,
   REDIS_HOST,
   REDIS_PORT,
   REDIS_PASSWORD,
@@ -18,4 +19,5 @@ export const {
   CLOUDINARY_API_KEY,
   CLOUDINARY_API_SECRET,
   CLOUDINARY_FOLDER,
+  SESSION_SECRET,
 } = process.env;

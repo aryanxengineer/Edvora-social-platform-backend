@@ -9,12 +9,14 @@ import { httpLogger } from "@/middlewares/httpLogger.middleware.js";
 import { globalErrorHandler } from "@/middlewares/error.middleware.js";
 import indexRouter from "./routes/index.js";
 import cookieParser from "cookie-parser";
+import { redis } from "./config/redis.js";
 
 const app: Express = express();
 
 // applyHelmet(app);  x
 // applyCors(app);
 // applyMongoSanitize(app);
+
 
 app.use(globalRateLimiter);
 

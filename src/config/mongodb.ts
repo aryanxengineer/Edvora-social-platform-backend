@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
+import { MONGO_URI } from "./env.js";
 
 // CONFIGURATION (MONOLITH SAFE)
-const MONGO_URI = process.env.MONGO_URI as string;
 
 const MAX_RETRIES = 5;
 const BASE_RETRY_DELAY_MS = 2000;
@@ -12,7 +12,7 @@ let retryCount = 0;
 
 // CORE CONNECTION FUNCTION
 const connectMongo = async (): Promise<void> => {
-  if (!MONGO_URI) {
+  if (!(MONGO_URI as string)) {
     console.error("[DB] MONGO_URI missing. Application cannot start.");
     process.exit(1);
   }
@@ -22,7 +22,7 @@ const connectMongo = async (): Promise<void> => {
   }
 
   try {
-    await mongoose.connect(MONGO_URI, {
+    await mongoose.connect(MONGO_URI as string, {
       // Pooling (Monolith tuned)
       maxPoolSize: 20, // concurrent requests
       minPoolSize: 5, // warm pool

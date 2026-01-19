@@ -1,21 +1,66 @@
-import { createClient } from "redis";
-import { REDIS_HOST, REDIS_PASSWORD, REDIS_PORT } from "./env.js";
+import { createClient, type RedisClientType } from "redis";
+import {
+  REDIS_HOST,
+  REDIS_PASSWORD,
+  REDIS_PORT,
+} from "./env.js";
 
-const redisClient = createClient({
-  username: "default",
-  password: String(REDIS_PASSWORD),
+/**
+ * Validate env early (fail fast)
+ */
+if (!REDIS_HOST) throw new Error("REDIS_HOST is required");
+if (!REDIS_PASSWORD) throw new Error("REDIS_PASSWORD is required");
+
+const port = Number(REDIS_PORT ?? 13444);
+if (Number.isNaN(port)) {
+  throw new Error("REDIS_PORT must be a number");
+}
+
+/**
+ * Redis client (singleton)
+ */
+export const redis: RedisClientType = createClient({
+  username: "default", // Redis Cloud ACL user
+  password: REDIS_PASSWORD,
   socket: {
-    host: REDIS_HOST as string,
-    port: Number(REDIS_PORT),
-    tls: true,
-    servername: REDIS_HOST as string,
+    host: REDIS_HOST,
+    port,
+    reconnectStrategy: (retries) => {
+      // exponential backoff (max 2s)
+      return Math.min(retries * 100, 2000);
+    },
   },
 });
 
-redisClient.on("connect", () => {
-  console.log("Connected to Redis server successfully!");
+/**
+ * Observability hooks
+ */
+redis.on("connect", () => {
+  console.log("[Redis] socket connected");
 });
 
-redisClient.on("error", (err) => console.log("Redis redisClient Error", err));
+redis.on("ready", () => {
+  console.log("[Redis] ready");
+});
 
-export default redisClient;
+redis.on("reconnecting", () => {
+  console.warn("[Redis] reconnecting");
+});
+
+redis.on("end", () => {
+  console.warn("[Redis] connection closed");
+});
+
+redis.on("error", (err) => {
+  console.error("[Redis] error:", err.message);
+});
+
+/**
+ * Explicit connect function
+ * (called from server bootstrap)
+ */
+export async function connectRedis() {
+  if (!redis.isOpen) {
+    await redis.connect();
+  }
+}
