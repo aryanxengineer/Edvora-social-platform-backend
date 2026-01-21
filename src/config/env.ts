@@ -6,6 +6,7 @@ config({
 
 export const {
   PORT,
+  NODE_ENV,
   REDIS_URL,
   REDIS_HOST,
   REDIS_PORT,

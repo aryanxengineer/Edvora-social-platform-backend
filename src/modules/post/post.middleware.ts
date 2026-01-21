@@ -1,13 +1,13 @@
 import type { NextFunction, Request, Response } from "express";
-import { createdPostSchema } from "./post.schema.js";
+import { newPostSchema } from "./post.schema.js";
 import { BadRequestError } from "@/common/errors/badRequest.error.js";
 
-export const validateCreatePost = (
+export const validateNewPost = (
   req: Request,
   _res: Response,
   next: NextFunction
 ) => {
-  const result = createdPostSchema.safeParse(req.body);
+  const result = newPostSchema.safeParse(req.body);
 
   if (!result.success) {
     return next(

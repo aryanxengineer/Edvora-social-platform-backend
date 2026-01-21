@@ -1,9 +1,10 @@
 import bcrypt from "bcrypt";
+
 import { UserModel } from "@/modules/user/user.model.js";
+
 import { ConflictError } from "@/common/errors/conflict.error.js";
 import { InternalServerError } from "@/common/errors/internal.error.js";
 import { UnauthorizedError } from "@/common/errors/unauthorized.error.js";
-import { logger } from "@/logger/index.js";
 
 export class AuthRepository {
   // Default constructor
@@ -77,7 +78,6 @@ export class AuthRepository {
     }
 
     if (!isValidPassword) {
-      logger.warn("Invalid password attempt for user:", exists._id.toString());
       throw new UnauthorizedError("Invalid password");
     }
 

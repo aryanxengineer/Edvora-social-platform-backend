@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const createdPostSchema = z
+export const newPostSchema = z
   .object({
     userId: z.string(),
     imageUrl: z.string().url(),

@@ -11,11 +11,19 @@ export class TokenService {
   }
 
   // Generate refresh token and store in Redis with sessionId
-  async generateRefreshToken(payload: { userId: string }) {
-    const refreshToken = jwt.sign(payload, JWT_REFRESH_SECRET as string, {
+  generateRefreshToken(payload: { userId: string }) {
+    return jwt.sign(payload, JWT_REFRESH_SECRET as string, {
       expiresIn: "7d",
     });
+  }
 
-    return { refreshToken };
+  // Verify access token
+  verifyAccessToken(token: string) {
+    return jwt.verify(token, JWT_ACCESS_SECRET as string);
+  }
+
+  // Verify refresh token
+  verifyRefreshToken(token: string) {
+    return jwt.verify(token, JWT_REFRESH_SECRET as string);
   }
 }

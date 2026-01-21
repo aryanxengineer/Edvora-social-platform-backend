@@ -55,7 +55,7 @@ const PostSchema = new Schema<IPost>(
   {
     timestamps: true,
     versionKey: false,
-  }
+  },
 );
 
 PostSchema.index({ authorId: 1, createdAt: -1 });
