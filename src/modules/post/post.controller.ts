@@ -8,13 +8,20 @@ export class PostController {
 
   public createPost = asyncHandler(async (req: Request, res: Response) => {
     // now we have sanitized and validated req.body here
-    const post = await this.postService.createPost(req.body);
+    if (!req.file) {
+      return sendResponse({
+        res,
+        statusCode: 400,
+        message: "Image is required",
+      });
+    }
+
+    await this.postService.createPost(req.body, req.file);
 
     return sendResponse({
       res,
       statusCode: 201,
       message: "Post created successfully",
-      data: post,
-    })
+    });
   });
 }

@@ -18,7 +18,7 @@ const UserSchema = new Schema<IUser>(
       trim: true,
     },
     comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
-    posts: [{ type: Schema.Types.ObjectId, ref: "Post" }],
+    posts: [{ type: Schema.Types.ObjectId, ref: "Post", default: [] }],
     reels: [{ type: Schema.Types.ObjectId, ref: "Reel" }],
     phoneNumber: { type: String, unique: true, sparse: true },
     password: { type: String, required: true },
