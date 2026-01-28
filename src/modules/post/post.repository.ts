@@ -12,14 +12,14 @@ export class PostRepository {
     url: string,
   ): Promise<void> {
     // Logic to save the created post to the database
-    const user = await UserModel.findById(data.authorId);
+    const user = await UserModel.findById(data.userId);
     if (!user) {
       throw new BadRequestError("Invalid user ID");
     }
 
     // Here you would typically create and save the post using your PostModel
     const post = await PostModel.create({
-      authorId: data.authorId,
+      authorId: data.userId,
       imageUrl: url,
       caption: data.caption || "",
     });

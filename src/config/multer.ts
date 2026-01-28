@@ -1,5 +1,6 @@
 import { type Request } from "express";
 import multer, { type FileFilterCallback } from "multer";
+import { log } from "node:console";
 
 const MAX_IMAGE_SIZE_MB = 2;
 const MAX_VIDEO_SIZE_MB = 50;
@@ -54,7 +55,7 @@ const baseMulter = multer({
   },
 });
 
-export const uploadImage = baseMulter.single("imageUrl");
+export const uploadImage = baseMulter.single("image");
 export const uploadVideo = baseMulter.single("video");
 
 export const uploadMultipleMedia = baseMulter.fields([

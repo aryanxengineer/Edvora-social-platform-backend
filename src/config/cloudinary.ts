@@ -56,6 +56,7 @@ export const uploadFromBuffer = async (
   buffer: Buffer,
   options?: CloudinaryUploadOptions
 ): Promise<UploadApiResponse> => {
+
   return new Promise((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
       {

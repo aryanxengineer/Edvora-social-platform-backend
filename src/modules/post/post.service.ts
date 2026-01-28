@@ -9,6 +9,7 @@ export class PostService {
     data: RequestedPostData,
     file: Express.Multer.File,
   ): Promise<void> {
+
     // Logic to handle post creation
     const uploadResult = await uploadFromBuffer(file.buffer, {
       resource_type: "image",

@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 
 export interface RequestedPostData {
-  authorId: Types.ObjectId;
+  userId: Types.ObjectId;
   imageUrl: string;
   title?: string;
   caption?: string;
