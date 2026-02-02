@@ -119,4 +119,15 @@ export class AuthController {
       });
     },
   );
+
+  // Verify Email controller
+  public verifyEmail = asyncHandler(async (req: Request, res: Response) => {
+    await this.authService.verifyEmail(req.body);
+
+    return sendResponse({
+      res,
+      statusCode: 200,
+      message: "Email verified successfully",
+    });
+  });
 }

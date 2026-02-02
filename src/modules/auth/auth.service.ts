@@ -2,9 +2,7 @@ import type { SignInUser, SignUpUser } from "./auth.types.js";
 import type { AuthRepository } from "./auth.repository.js";
 
 export class AuthService {
-  constructor(
-    private readonly authRepository: AuthRepository,
-  ) {}
+  constructor(private readonly authRepository: AuthRepository) {}
 
   // Sign up service
   async signUp(input: SignUpUser, device?: string) {
@@ -17,6 +15,12 @@ export class AuthService {
   async signIn(input: SignInUser, device?: string) {
     const user = await this.authRepository.signIn(input);
 
+    return { user };
+  }
+
+  // Verify Email service
+  async verifyEmail(token: string) {
+    const user = await this.authRepository.verifyEmail(token);
     return { user };
   }
 }
