@@ -19,8 +19,8 @@ export class AuthService {
   }
 
   // Verify Email service
-  async verifyEmail(token: string) {
-    const user = await this.authRepository.verifyEmail(token);
-    return { user };
-  }
+  // async verifyEmail(token: string) {
+  //   const user = await this.authRepository.verifyEmail(token);
+  //   return { user };
+  // }
 }

@@ -1,3 +1,4 @@
+import { type ISignInUser, type ISignUpUser } from "./auth.types.js";
 // auth.validation.ts
 import type { Request, Response, NextFunction } from "express";
 import { signinUserSchema, signupUserSchema } from "./auth.schema.js";
@@ -8,7 +9,7 @@ export const signupUserValidation = (
   _res: Response,
   next: NextFunction,
 ) => {
-  const result = signupUserSchema.safeParse(req.body);
+  const result = signupUserSchema.safeParse(req.body as ISignUpUser);
 
   if (!result.success) {
     return next(
@@ -27,7 +28,7 @@ export const signInUserValidation = (
   _res: Response,
   next: NextFunction,
 ) => {
-  const result = signinUserSchema.safeParse(req.body);
+  const result = signinUserSchema.safeParse(req.body as ISignInUser);
 
   if (!result.success) {
     return next(

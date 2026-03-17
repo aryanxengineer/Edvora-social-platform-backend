@@ -1,8 +1,8 @@
 import rateLimit from "express-rate-limit";
 
 export const globalRateLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // per IP
+  windowMs: 1 * 60 * 1000,
+  max: 10, // per IP
   standardHeaders: true,
   legacyHeaders: false,
   message: {

@@ -1,4 +1,4 @@
-export interface SignUpUser extends Document {
+export interface ISignUpUser extends Document {
   fullname: string;
   username: string;
   email?: string;
@@ -9,7 +9,7 @@ export interface SignUpUser extends Document {
   gender?: number; // 0 = male, 1 = female, 2 = other (example)
 }
 
-export interface SignInUser extends Document {
+export interface ISignInUser extends Document {
   username?: string;
   email?: string;
   phoneNumber?: string;

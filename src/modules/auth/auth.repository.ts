@@ -89,21 +89,21 @@ export class AuthRepository {
   }
 
   // Verify Email Repository
-  async verifyEmail(token: string) {
-    // Find user with the verification token
-    const user = await  .findOne({ emailVerificationToken: token });
+  // async verifyEmail(token: string) {
+  //   // Find user with the verification token
+  //   const user = await  .findOne({ emailVerificationToken: token });
 
-    if (!user) {
-      throw new UnauthorizedError("Invalid or expired verification token");
-    }
-    // Update user's email verification status
-    user.isEmailVerified = true;
-    user.emailVerificationToken = undefined; // Clear the token
-    await user.save();
-    return {
-      id: user._id.toString(),
-      username: user.username,
-      email: user.email,
-    };
-  }
+  //   if (!user) {
+  //     throw new UnauthorizedError("Invalid or expired verification token");
+  //   }
+  //   // Update user's email verification status
+  //   user.isEmailVerified = true;
+  //   user.emailVerificationToken = undefined; // Clear the token
+  //   await user.save();
+  //   return {
+  //     id: user._id.toString(),
+  //     username: user.username,
+  //     email: user.email,
+  //   };
+  // }
 }
