@@ -9,7 +9,7 @@ const PostSchema = new Schema<IPost>(
       required: true,
       index: true,
     },
-    authorUsername: {
+    authorUsernameSnapshot: {
       type: String,
       required: true,
     },
@@ -60,7 +60,9 @@ const PostSchema = new Schema<IPost>(
     },
 
     hashtags: [{ type: String, index: true }],
-    mentions: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    mentions: {
+      type: [String],
+    },
     isReported: { type: Boolean, default: false },
     reportCount: { type: Number, default: 0 },
 

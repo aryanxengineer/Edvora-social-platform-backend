@@ -7,25 +7,15 @@ export type PostImageType = {
   publicId: string;
 };
 
-export interface RequestedPostData {
-  userId: Types.ObjectId;
-  imageUrl: string;
-  title?: string;
-  caption?: string;
-  location?: string;
-  hashtags?: string[];
-  mentions?: Types.ObjectId[];
-}
-
 export interface IPost extends Document {
   _id: Types.ObjectId;
   authorId: Types.ObjectId;
-  authorUsername: string;
+  authorUsernameSnapshot: string;
   authorAvatar: string;
   image: PostImageType;
   caption?: string;
   hashtags: string[];
-  mentions: Types.ObjectId[];
+  mentions: string[];
   likesCount: number;
   commentsCount: number;
   sharesCount: number;

@@ -1,40 +1,74 @@
-import type { RequestedPostData } from "./post.types.js";
-import type { Types } from "mongoose";
-
 import { BadRequestError } from "@common/errors/badRequest.error.js";
 import { UserModel } from "@modules/user/user.model.js";
 import { PostModel } from "./post.model.js";
 import type { UploadApiResponse } from "cloudinary";
+import type { NewPostDataType } from "./post.schema.js";
+import { deleteAsset } from "@config/cloudinary.js";
 
 export class PostRepository {
-  constructor() {}
-
   public async saveCreatedPost(
     userId: string,
-    data: RequestedPostData,
-    cloudinaryResult : UploadApiResponse,
-  ): Promise<void> {
-    // Logic to save the created post to the database
-    const user = await UserModel.findById(userId);
-    if (!user) {
-      throw new BadRequestError("Invalid user ID");
+    data: NewPostDataType,
+    cloudinaryResult: UploadApiResponse,
+  ) {
+    try {
+      const user = await UserModel.findById(userId).select("username");
+
+      if (!user) {
+        throw new BadRequestError("Invalid userId");
+      }
+
+      const normalizeArray = (value: any) => {
+        if (!value) return [];
+        return Array.isArray(value) ? value : [value];
+      };
+
+      const hashtags = [
+        ...new Set(
+          normalizeArray(data.tags).map((tag: string) =>
+            tag.trim().toLowerCase(),
+          ),
+        ),
+      ];
+
+      const mentions = [
+        ...new Set(normalizeArray(data.mentions).map((m: string) => m.trim())),
+      ];
+
+      console.log(
+        userId,
+        "\n",
+        user.username,
+        "\n",
+        cloudinaryResult.secure_url,
+        "\n",
+        cloudinaryResult.public_id,
+        "\n",
+        data.caption,
+        "\n",
+        data.visibility || 'public',
+        "\n",
+        hashtags,
+        mentions,
+      );
+
+      const post = await PostModel.create({
+        authorId: userId,
+        authorUsernameSnapshot: user.username,
+        image: {
+          url: cloudinaryResult.secure_url,
+          publicId: cloudinaryResult.public_id,
+        },
+        caption: data.caption ?? "",
+        visibility: data.visibility || "public",
+        hashtags,
+        mentions,
+      });
+
+      return post;
+    } catch (error) {
+      await deleteAsset(cloudinaryResult.public_id);
+      throw error;
     }
-
-    // Here you would typically create and save the post using your PostModel
-    const post = await PostModel.create({
-      authorId: userId,
-      image: {
-        url: cloudinaryResult.secure_url,
-        publicId: cloudinaryResult.public_id,
-      },
-      caption: data?.caption || "",
-    });
-
-    post.mentions.push(user._id);
-    post.hashtags.push(...(data.hashtags || []));
-
-    await post.save();
-
-    return;
   }
 }
