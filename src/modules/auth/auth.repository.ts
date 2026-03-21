@@ -1,14 +1,27 @@
 import bcrypt from "bcrypt";
 
-import { UserModel } from "@/modules/user/user.model.js";
+import { UserModel } from "@modules/user/user.model.js";
 
-import { ConflictError } from "@/common/errors/conflict.error.js";
-import { InternalServerError } from "@/common/errors/internal.error.js";
-import { UnauthorizedError } from "@/common/errors/unauthorized.error.js";
+import { ConflictError } from "@common/errors/conflict.error.js";
+import { InternalServerError } from "@common/errors/internal.error.js";
+import { UnauthorizedError } from "@common/errors/unauthorized.error.js";
+import { BadRequestError } from "@common/errors/badRequest.error.js";
+import { compareValue, hashValue } from "@common/utils/bcrypt.js";
+import type { SignInDataType } from "./auth.schema.js";
 
 export class AuthRepository {
   // Default constructor
   constructor() {}
+
+  async getMyDetails(userId: string) {
+    const user = await UserModel.findById(userId);
+
+    if (!user) {
+      throw new BadRequestError("Resource not found");
+    }
+
+    return user;
+  }
 
   async signUp(data: any) {
     // Check existing user
@@ -22,7 +35,7 @@ export class AuthRepository {
       }
     }
 
-    const hashedPassword = await bcrypt.hash(data.password, 12);
+    const hashedPassword = await hashValue(data.password);
 
     let user;
     try {
@@ -52,39 +65,29 @@ export class AuthRepository {
   }
 
   // SignInService
-  async signIn(data: any) {
-    const exists = await UserModel.findOne({
-      $or: [
-        { email: data.email },
-        { phoneNumber: data.phoneNumber },
-        { username: data.username },
-      ],
-    }).lean();
+  async signIn(data: SignInDataType) {
+    const query: any = {};
 
-    if (!exists) {
-      if (data.email.trim()) {
-        throw new UnauthorizedError("Email not found!");
-      } else if (data.phoneNumber.trim())
-        throw new UnauthorizedError("Number not found");
-      else if (data.username.trim())
-        throw new UnauthorizedError("Username not found");
-      else throw new UnauthorizedError();
+    if (data.email) query.email = data.email;
+    else if (data.phoneNumber) query.phoneNumber = data.phoneNumber;
+    else if (data.username) query.username = data.username;
+
+    const user = await UserModel.findOne(query).select("+password").lean();
+
+    if (!user) {
+      throw new UnauthorizedError("User not found");
     }
 
-    let isValidPassword = false;
-
-    if (data.password.trim()) {
-      isValidPassword = await bcrypt.compare(data.password, exists.password);
-    }
+    const isValidPassword = await compareValue(data.password, user.password);
 
     if (!isValidPassword) {
       throw new UnauthorizedError("Invalid password");
     }
 
     return {
-      id: exists._id.toString(),
-      username: exists.username,
-      email: exists.email,
+      id: user._id.toString(),
+      username: user.username,
+      email: user.email,
     };
   }
 

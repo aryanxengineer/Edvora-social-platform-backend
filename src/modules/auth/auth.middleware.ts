@@ -2,7 +2,7 @@ import { type ISignInUser, type ISignUpUser } from "./auth.types.js";
 // auth.validation.ts
 import type { Request, Response, NextFunction } from "express";
 import { signinUserSchema, signupUserSchema } from "./auth.schema.js";
-import { BadRequestError } from "@/common/errors/badRequest.error.js";
+import { BadRequestError } from "@common/errors/badRequest.error.js";
 
 export const signupUserValidation = (
   req: Request,
@@ -32,7 +32,7 @@ export const signInUserValidation = (
 
   if (!result.success) {
     return next(
-      new BadRequestError("Invalid signup payload", result.error.flatten()),
+      new BadRequestError("Invalid signin payload", result.error.flatten()),
     );
   }
 

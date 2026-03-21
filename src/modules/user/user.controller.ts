@@ -1,9 +1,8 @@
 import type { Request, Response } from "express";
-
-import { asyncHandler } from "@/common/utils/asyncHandler.js";
 import type { UserService } from "./user.service.js";
-import { sendResponse } from "@/common/utils/sendResponse.js";
-import { success } from "zod";
+
+import { asyncHandler } from "@common/utils/asyncHandler.js";
+import { sendResponse } from "@common/utils/sendResponse.js";
 
 export class UserController {
   // Controller methods will be defined here

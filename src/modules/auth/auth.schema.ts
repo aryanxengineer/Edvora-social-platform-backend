@@ -99,3 +99,7 @@ export const signinUserSchema = z
     message: "Either email or username or phone number is required",
   })
   .strict();
+
+
+  export type SignInDataType = z.infer<typeof signinUserSchema>;
+  export type SignUpDataType = z.infer<typeof signupUserSchema>;

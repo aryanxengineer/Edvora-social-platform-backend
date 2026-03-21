@@ -15,3 +15,4 @@ export interface ISignInUser extends Document {
   phoneNumber?: string;
   password: string;
 }
+

@@ -1,18 +1,22 @@
-import type { Types } from "mongoose";
+import type { Document } from "mongoose";
+import type { Visibility } from "@modules/post/post.types.js";
 
 export interface IUser extends Document {
   fullname: string;
   username: string;
   email?: string;
-  comments?: Types.ObjectId[];
-  posts?: Types.ObjectId[];
-  reels?: Types.ObjectId[];
   phoneNumber?: string;
   password: string;
   dateOfBirth: Date;
   profilePicture?: string;
   gender?: number; // 0 = male, 1 = female, 2 = other (example)
-  isVerified?: boolean,
+  isVerified?: boolean;
+  postCounts: number;
+  reelCounts: number;
+  followerCounts: number;
+  followingCounts: number;
+  savedPostCounts: number;
+  accountVisibility: Visibility;
   createdAt: Date;
   updatedAt: Date;
 }

@@ -23,6 +23,8 @@ const connectMongo = async (): Promise<void> => {
 
   try {
     await mongoose.connect(MONGO_URI as string, {
+      dbName: "Edvora_db",
+
       // Pooling (Monolith tuned)
       maxPoolSize: 20, // concurrent requests
       minPoolSize: 5, // warm pool
@@ -43,7 +45,7 @@ const connectMongo = async (): Promise<void> => {
 
     console.error(
       `[DB] Connection failed (attempt ${retryCount}/${MAX_RETRIES})`,
-      error
+      error,
     );
 
     if (retryCount >= MAX_RETRIES) {

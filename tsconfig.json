@@ -43,14 +43,24 @@
 
     "baseUrl": "./src",
     "paths": {
-      "@/*": ["*"]
+      "@common/*": ["common/*"],
+      "@config/*": ["config/*"],
+      "@constants/*": ["constants/*"],
+      "@jobs/*": ["jobs/*"],
+      "@libs/*": ["libs/*"],
+      "@logger/*": ["logger/*"],
+      "@middlewares/*": ["middlewares/*"],
+      "@modules/*": ["modules/*"],
+      "@queues/*": ["queues/*"],
+      "@routes/*": ["routes/*"],
+      "@types/*": ["types/*"]
     },
 
     "ignoreDeprecations": "6.0",
 
-     "typeRoots": ["./src/types", "./node_modules/@types"]
+    "typeRoots": ["./src/types", "./node_modules/@types"]
   },
-  
+
   "include": ["src"],
   "exclude": ["node_modules", "dist"]
 }

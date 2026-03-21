@@ -1,7 +1,7 @@
 // src/app/error.middleware.ts
 
 import type { Request, Response, NextFunction } from "express";
-import { AppError } from "@/common/errors/base.error.js";
+import { AppError } from "@common/errors/base.error.js";
 
 export const globalErrorHandler = (
   err: unknown,

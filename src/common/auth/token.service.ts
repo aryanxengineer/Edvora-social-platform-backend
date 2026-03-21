@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-import { JWT_ACCESS_SECRET, JWT_REFRESH_SECRET } from "@/config/env.js";
+import { JWT_ACCESS_SECRET, JWT_REFRESH_SECRET } from "@config/env.js";
 
 export class TokenService {
   // Generate access token

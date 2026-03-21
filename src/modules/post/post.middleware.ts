@@ -1,17 +1,26 @@
 import type { NextFunction, Request, Response } from "express";
 import { newPostSchema } from "./post.schema.js";
-import { BadRequestError } from "@/common/errors/badRequest.error.js";
+import { BadRequestError } from "@common/errors/badRequest.error.js";
 
 export const validateNewPost = (
   req: Request,
   _res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
-  const result = newPostSchema.safeParse(req.body);
+
+  const formattedPostData = {
+    imageUrl: req.file,
+    title: req.body?.title,
+    caption: req.body?.caption,
+    location: req.body?.location,
+    tags: req.body?.tags,
+    mentions: req.body?.mentions,
+  }
+  const result = newPostSchema.safeParse(formattedPostData);
 
   if (!result.success) {
     return next(
-      new BadRequestError("Invalid signup payload", result.error.flatten())
+      new BadRequestError("Invalid new posts payload", result.error.flatten()),
     );
   }
 

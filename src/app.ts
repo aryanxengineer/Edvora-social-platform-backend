@@ -4,14 +4,14 @@ import {
   applyCors,
   applyHelmet,
   applyMongoSanitize,
-} from "@/middlewares/security.middleware.js";
+} from "@middlewares/security.middleware.js";
 
-import { globalRateLimiter } from "@/middlewares/rateLimit.middleware.js";
-import { globalErrorHandler } from "@/middlewares/error.middleware.js";
-import { sessionMiddleware } from "@/middlewares/session.middleware.js";
-import { httpLogger } from "@/middlewares/httpLogger.middleware.js";
+import { globalRateLimiter } from "@middlewares/rateLimit.middleware.js";
+import { globalErrorHandler } from "@middlewares/error.middleware.js";
+import { sessionMiddleware } from "@middlewares/session.middleware.js";
+import { httpLogger } from "@middlewares/httpLogger.middleware.js";
 
-import indexRouter from "@/routes/index.js";
+import indexRouter from "@routes/index.js";
 import cookieParser from "cookie-parser";
 
 const app: Express = express();

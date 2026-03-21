@@ -4,14 +4,28 @@ import type { Request, Response } from "express";
 import type { AuthService } from "./auth.service.js";
 
 // Import Utility Functions
-import { asyncHandler } from "@/common/utils/asyncHandler.js";
-import { sendResponse } from "@/common/utils/sendResponse.js";
-import { redis } from "@/config/redis.js";
-import { UnauthorizedError } from "@/common/errors/unauthorized.error.js";
+import { asyncHandler } from "@common/utils/asyncHandler.js";
+import { sendResponse } from "@common/utils/sendResponse.js";
+import { redis } from "@config/redis.js";
+import { UnauthorizedError } from "@common/errors/unauthorized.error.js";
 
 // Auth Controller Class
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
+
+  // Get user /me
+  public getMyDetails = asyncHandler(async (req: Request, res: Response) => {
+    const userId = req.user?.userId as string;
+
+    const user = await this.authService.getMyDetails(userId);
+
+    return sendResponse({
+      res,
+      statusCode: 200,
+      message: "User details",
+      data: user,
+    });
+  })
 
   // Sign up controller
   public signUp = asyncHandler(async (req: Request, res: Response) => {
@@ -39,14 +53,15 @@ export class AuthController {
   // Sign in controller
   public signIn = asyncHandler(async (req: Request, res: Response) => {
     const { user } = await this.authService.signIn(req.body);
-
+    console.log(user , ' controller mer koi error nhi aayi service se aane ke baad');
+    
     req.session.user = {
       userId: user.id,
       ...(user.email && { email: user.email }),
       ...(req.headers["user-agent"] && { device: req.headers["user-agent"] }),
       ...(req.ip && { ip: req.ip }),
     };
-
+    
     // Track session for multi-device mapping
     const sessionId = req.sessionID;
     await redis.sAdd(`user:${user.id}:sessions`, sessionId);

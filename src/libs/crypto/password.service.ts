@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import { authConfig } from "@/config/authConfig.js";
+import { authConfig } from "@config/authConfig.js";
 
 class PasswordService {
   async hash(password: string): Promise<string> {

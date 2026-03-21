@@ -2,8 +2,8 @@ import session from "express-session";
 
 import { RedisStore as ConnectRedisStore } from "connect-redis";
 
-import { NODE_ENV, SESSION_SECRET } from "@/config/env.js";
-import { redis } from "@/config/redis.js";
+import { NODE_ENV, SESSION_SECRET } from "@config/env.js";
+import { redis } from "@config/redis.js";
 
 
 const store = new ConnectRedisStore({

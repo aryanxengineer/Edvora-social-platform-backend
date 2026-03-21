@@ -1,6 +1,6 @@
 import jwt, { type SignOptions } from "jsonwebtoken";
-import { authConfig } from "@/config/authConfig.js";
-import type { AuthJwtPayload } from "@/types/auth.types.js";
+import { authConfig } from "@config/authConfig.js";
+import { type AuthJwtPayload } from "types/auth.types.js";
 
 class JwtService {
   private accessOptions: SignOptions = {
@@ -12,33 +12,19 @@ class JwtService {
   };
 
   signAccessToken(payload: AuthJwtPayload): string {
-    return jwt.sign(
-      payload,
-      authConfig.jwt.accessSecret,
-      this.accessOptions
-    );
+    return jwt.sign(payload, authConfig.jwt.accessSecret, this.accessOptions);
   }
 
   signRefreshToken(payload: AuthJwtPayload): string {
-    return jwt.sign(
-      payload,
-      authConfig.jwt.refreshSecret,
-      this.refreshOptions
-    );
+    return jwt.sign(payload, authConfig.jwt.refreshSecret, this.refreshOptions);
   }
 
   verifyAccessToken(token: string): AuthJwtPayload {
-    return jwt.verify(
-      token,
-      authConfig.jwt.accessSecret
-    ) as AuthJwtPayload;
+    return jwt.verify(token, authConfig.jwt.accessSecret) as AuthJwtPayload;
   }
 
   verifyRefreshToken(token: string): AuthJwtPayload {
-    return jwt.verify(
-      token,
-      authConfig.jwt.refreshSecret
-    ) as AuthJwtPayload;
+    return jwt.verify(token, authConfig.jwt.refreshSecret) as AuthJwtPayload;
   }
 }
 

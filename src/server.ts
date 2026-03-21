@@ -1,12 +1,12 @@
 // src/server.ts
-import connectMongo from "@/config/mongodb.js";
-import { connectRedis } from "@/config/redis.js";
-import { PORT } from "@/config/env.js";
+import connectMongo from "@config/mongodb.js";
+import { connectRedis } from "@config/redis.js";
+import { PORT } from "@config/env.js";
 
 import app from "./app.js";
 import { createServer } from "node:http";
 
-import { logger } from "@/logger/index.js";
+import { logger } from "@logger/index.js";
 
 const httpServer = createServer(app);
 

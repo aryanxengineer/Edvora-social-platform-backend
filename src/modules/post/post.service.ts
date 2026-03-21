@@ -1,4 +1,4 @@
-import { uploadFromBuffer } from "@/config/cloudinary.js";
+import { uploadFromBuffer } from "@config/cloudinary.js";
 import type { PostRepository } from "./post.repository.js";
 import type { RequestedPostData } from "./post.types.js";
 
@@ -6,6 +6,7 @@ export class PostService {
   constructor(private postRepository: PostRepository) {}
 
   public async createPost(
+    userId : string,
     data: RequestedPostData,
     file: Express.Multer.File,
   ): Promise<void> {
@@ -15,7 +16,7 @@ export class PostService {
       resource_type: "image",
     });
 
-    await this.postRepository.saveCreatedPost(data, uploadResult.secure_url);
+    await this.postRepository.saveCreatedPost(userId, data, uploadResult);
 
     return;
   }

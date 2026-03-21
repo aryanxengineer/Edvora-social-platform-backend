@@ -8,8 +8,8 @@ import {
   signInUserValidation,
   signupUserValidation,
 } from "./auth.middleware.js";
-import { authRateLimiter } from "@/middlewares/rateLimit.middleware.js";
-import { requireAuth } from "@/middlewares/authorization.middleware.js";
+import { authRateLimiter } from "@middlewares/rateLimit.middleware.js";
+import { requireAuth } from "@middlewares/authorization.middleware.js";
 
 const authRouter = Router();
 
@@ -21,6 +21,7 @@ const authController = new AuthController(authService);
 
 authRouter.use(authRateLimiter);
 
+authRouter.get("/me", requireAuth, authController.getMyDetails);
 authRouter.post("/signup", signupUserValidation, authController.signUp);
 authRouter.post("/signin", signInUserValidation, authController.signIn);
 authRouter.post(

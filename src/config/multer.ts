@@ -1,6 +1,6 @@
+import { logger } from "@logger/index.js";
 import { type Request } from "express";
 import multer, { type FileFilterCallback } from "multer";
-import { log } from "node:console";
 
 const MAX_IMAGE_SIZE_MB = 2;
 const MAX_VIDEO_SIZE_MB = 50;

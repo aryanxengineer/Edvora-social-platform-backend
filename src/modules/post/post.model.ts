@@ -1,18 +1,31 @@
-import mongoose, { Schema, Types } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import type { IPost } from "./post.types.js";
 
 const PostSchema = new Schema<IPost>(
   {
     authorId: {
-      type: Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
       index: true,
     },
-
-    imageUrl: {
+    authorUsername: {
       type: String,
       required: true,
+    },
+    authorAvatar: {
+      type: String,
+    },
+
+    image: {
+      url: {
+        type: String,
+        required: true,
+      },
+      publicId: {
+        type: String,
+        required: true,
+      },
     },
 
     likesCount: {
@@ -40,10 +53,14 @@ const PostSchema = new Schema<IPost>(
       maxlength: 2200,
       trim: true,
     },
+    visibility: {
+      type: String,
+      enum: ["public", "private"],
+      default: "public",
+    },
 
-    comments: [{ type: Types.ObjectId, ref: "Comment" }],
     hashtags: [{ type: String, index: true }],
-    mentions: [{ type: Types.ObjectId, ref: "User" }],
+    mentions: [{ type: Schema.Types.ObjectId, ref: "User" }],
     isReported: { type: Boolean, default: false },
     reportCount: { type: Number, default: 0 },
 

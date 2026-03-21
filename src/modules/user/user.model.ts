@@ -17,20 +17,28 @@ const UserSchema = new Schema<IUser>(
       lowercase: true,
       trim: true,
     },
-    comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
-    posts: [{ type: Schema.Types.ObjectId, ref: "Post", default: [] }],
-    reels: [{ type: Schema.Types.ObjectId, ref: "Reel" }],
+    postCounts: { type: Number, default: 0 },
+    reelCounts: { type: Number, default: 0 },
+    followerCounts: { type: Number, default: 0 },
+    followingCounts: { type: Number, default: 0 },
+    savedPostCounts: { type: Number, default: 0 },
     phoneNumber: { type: String, unique: true, sparse: true },
-    password: { type: String, required: true },
+    password: { type: String, required: true, select: false },
     dateOfBirth: { type: Date, required: true },
     profilePicture: { type: String, default: null },
     gender: { type: Number, enum: [0, 1, 2], default: 2 },
     isVerified: { type: Boolean, default: false },
+    accountVisibility: {
+      type: String,
+      enum: ["public", "private"],
+      default: "public",
+    },
   },
+
   {
     timestamps: true,
     versionKey: false,
-  }
+  },
 );
 
 // Indexing for performance

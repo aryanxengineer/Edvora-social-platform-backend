@@ -1,8 +1,8 @@
 import express, { type Express } from "express";
 
-import authRouter from "@/modules/auth/auth.routes.js";
-import postRouter from "@/modules/post/post.routes.js";
-import userRouter from "@/modules/user/user.routes.js";
+import authRouter from "@modules/auth/auth.routes.js";
+import postRouter from "@modules/post/post.routes.js";
+import userRouter from "@modules/user/user.routes.js";
 
 const indexRouter: Express = express();
 

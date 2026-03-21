@@ -2,7 +2,7 @@ import mongoose, { Schema, Types } from "mongoose";
 import {
   PostVisibility,
   PostStatus,
-} from "@/common/enums/enums.js";
+} from "@common/enums/enums.js";
 
 // common sub-schema
 const EngagementSchema = new Schema(
