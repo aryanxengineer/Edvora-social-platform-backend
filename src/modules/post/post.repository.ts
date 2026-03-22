@@ -35,23 +35,6 @@ export class PostRepository {
         ...new Set(normalizeArray(data.mentions).map((m: string) => m.trim())),
       ];
 
-      console.log(
-        userId,
-        "\n",
-        user.username,
-        "\n",
-        cloudinaryResult.secure_url,
-        "\n",
-        cloudinaryResult.public_id,
-        "\n",
-        data.caption,
-        "\n",
-        data.visibility || 'public',
-        "\n",
-        hashtags,
-        mentions,
-      );
-
       const post = await PostModel.create({
         authorId: userId,
         authorUsernameSnapshot: user.username,

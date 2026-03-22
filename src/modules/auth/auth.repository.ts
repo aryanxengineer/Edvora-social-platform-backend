@@ -1,13 +1,12 @@
-import bcrypt from "bcrypt";
-
 import { UserModel } from "@modules/user/user.model.js";
-
 import { ConflictError } from "@common/errors/conflict.error.js";
 import { InternalServerError } from "@common/errors/internal.error.js";
 import { UnauthorizedError } from "@common/errors/unauthorized.error.js";
 import { BadRequestError } from "@common/errors/badRequest.error.js";
 import { compareValue, hashValue } from "@common/utils/bcrypt.js";
+
 import type { SignInDataType } from "./auth.schema.js";
+import { ProfileModel } from "@modules/profile/profile.model.js";
 
 export class AuthRepository {
   // Default constructor
@@ -23,6 +22,7 @@ export class AuthRepository {
     return user;
   }
 
+  // Sign up Repository - Creating new user
   async signUp(data: any) {
     // Check existing user
     const exists = await UserModel.findOne({
@@ -56,6 +56,26 @@ export class AuthRepository {
 
       throw new InternalServerError();
     }
+
+    const {
+      _id,
+      username,
+      fullname,
+      email,
+      dateOfBirth,
+      gender,
+      profilePicture,
+    } = user;
+
+    await ProfileModel.create({
+      username,
+      fullname,
+      profileHandler: _id,
+      ...(email && { email }),
+      ...(dateOfBirth && { dateOfBirth }),
+      ...(gender !== undefined && { gender }),
+      avatar: profilePicture ?? null,
+    });
 
     return {
       id: user._id.toString(),

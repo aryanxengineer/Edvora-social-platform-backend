@@ -1,17 +1,18 @@
 import { Router } from "express";
 
-// import { FollowRepository } from "./follow.repository.js";
-// import { FollowController } from "./follow.controller.js";
-// import { FollowService } from "./follow.service.js";
+import { FollowRepository } from "./follow.repository.js";
+import { FollowController } from "./follow.controller.js";
+import { FollowService } from "./follow.service.js";
+import { requireAuth } from "@middlewares/authorization.middleware.js";
 
 const followRouter = Router();
 
 // Dependency Injections for controller
-// const followRepository = new FollowRepository();
-// const followService = new FollowService(followRepository);
-// const followController = new FollowController(followService);
+const followRepository = new FollowRepository();
+const followService = new FollowService(followRepository);
+const followController = new FollowController(followService);
 
-// followRouter.post("/:userId", followController.followUser);
+followRouter.post("/", requireAuth, followController.followUser);
 // followRouter.delete("/:userId", followController.unfollowUser);
 // followRouter.get("/followers/:userId", followController.getFollowers);
 // followRouter.get("/following/:userId", followController.getFollowing);

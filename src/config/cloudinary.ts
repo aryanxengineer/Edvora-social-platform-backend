@@ -9,9 +9,10 @@ import {
   CLOUDINARY_CLOUD_NAME,
   CLOUDINARY_FOLDER,
 } from "./env.js";
+import { InternalServerError } from "@common/errors/internal.error.js";
 
 if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_API_KEY || !CLOUDINARY_API_SECRET) {
-  throw new Error(
+  throw new InternalServerError(
     "Cloudinary configuration error: Missing required environment variables."
   );
 }
