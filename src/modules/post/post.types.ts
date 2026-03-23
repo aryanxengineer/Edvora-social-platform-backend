@@ -9,7 +9,7 @@ export type PostImageType = {
 
 export interface IPost extends Document {
   _id: Types.ObjectId;
-  authorId: Types.ObjectId;
+  profileId: Types.ObjectId;
   authorUsernameSnapshot: string;
   authorAvatar: string;
   image: PostImageType;

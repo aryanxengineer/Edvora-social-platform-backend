@@ -12,15 +12,20 @@ const followRepository = new FollowRepository();
 const followService = new FollowService(followRepository);
 const followController = new FollowController(followService);
 
-followRouter.post("/", requireAuth, followController.followUser);
-// followRouter.delete("/:userId", followController.unfollowUser);
-// followRouter.get("/followers/:userId", followController.getFollowers);
-// followRouter.get("/following/:userId", followController.getFollowing);
+followRouter.use(requireAuth);
+
+followRouter.post("/:profileId", followController.followProfile);
+followRouter.delete("/unfollow/:profileId", followController.unfollowProfile);
+followRouter.post(
+  "/follow-back/:profileId",
+  followController.followBackProfile,
+);
+followRouter.get("/followers/:userId", followController.allFollowerProfiles);
+followRouter.get("/following/:userId", followController.allFollowingProfiles);
 // followRouter.get("/requests", followController.getFollowRequests);
 // followRouter.post("/requests/:userId/accept", followController.acceptFollowRequest);
 // followRouter.delete("/requests/:userId/reject", followController.rejectFollowRequest);
 // followRouter.get("/suggestions", followController.getFollowSuggestions);
-
 
 export default followRouter;
 

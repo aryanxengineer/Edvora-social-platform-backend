@@ -17,14 +17,12 @@ const profileSchema = new Schema<IProfile>(
       lowercase: true,
       trim: true,
     },
-    profileHandler: {
+    userId: {
       type: Schema.Types.ObjectId,
       required: true,
     },
     postCounts: { type: Number, default: 0 },
     reelCounts: { type: Number, default: 0 },
-    followerCounts: { type: Number, default: 0 },
-    followingCounts: { type: Number, default: 0 },
     savedPostCounts: { type: Number, default: 0 },
     dateOfBirth: { type: Date },
     avatar: { type: String, default: null },

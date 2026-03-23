@@ -11,8 +11,6 @@ export class ProfileController {
   // fetching user profile
   public myProfile = asyncHandler(async (req: Request, res: Response) => {
 
-    console.log('req mere controller tak aa gyi hai');
-
     const userId = req.user?.userId;
 
     if (!userId) {

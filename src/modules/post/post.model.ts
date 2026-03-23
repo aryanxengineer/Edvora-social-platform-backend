@@ -3,9 +3,8 @@ import type { IPost } from "./post.types.js";
 
 const PostSchema = new Schema<IPost>(
   {
-    authorId: {
+    profileId: {
       type: Schema.Types.ObjectId,
-      ref: "User",
       required: true,
       index: true,
     },
@@ -79,6 +78,5 @@ const PostSchema = new Schema<IPost>(
 
 PostSchema.index({ authorId: 1, createdAt: -1 });
 PostSchema.index({ hashtags: 1, createdAt: -1 });
-PostSchema.index({ score: -1, createdAt: -1 });
 
 export const PostModel = mongoose.model<IPost>("Post", PostSchema);

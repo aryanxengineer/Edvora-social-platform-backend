@@ -4,7 +4,7 @@ import type mongoose from "mongoose";
 export interface IProfile extends Document {
   username: string;
   fullname?: string;
-  profileHandler: mongoose.Types.ObjectId;
+  userId: mongoose.Types.ObjectId;
   email?: string;
   dateOfBirth?: Date;
   gender: number;
@@ -12,8 +12,6 @@ export interface IProfile extends Document {
   bio?: string;
   postCounts: number;
   reelCounts: number;
-  followerCounts: number;
-  followingCounts: number;
   savedPostCounts: number;
   accountVisibility: Visibility;
   createdAt: Date;

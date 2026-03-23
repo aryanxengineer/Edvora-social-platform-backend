@@ -14,7 +14,7 @@ export class ProfileRepository {
       }
 
       const profile = await ProfileModel.find({
-        profileHandler: { $eq: userId },
+        userId,
       });
 
       if (!profile) {
@@ -22,7 +22,6 @@ export class ProfileRepository {
       }
 
       return profile;
-
     } catch (error: any) {
       throw new InternalServerError("Internal Server Error: ", error?.message);
     }

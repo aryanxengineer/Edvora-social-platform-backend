@@ -47,7 +47,6 @@ export class AuthRepository {
         phoneNumber: data?.phoneNumber,
         dateOfBirth: data.dateOfBirth,
         gender: data?.gender,
-        profilePicture: data?.profilePicture,
       });
     } catch (err: any) {
       if (err.code === 11000) {
@@ -57,24 +56,15 @@ export class AuthRepository {
       throw new InternalServerError();
     }
 
-    const {
-      _id,
-      username,
-      fullname,
-      email,
-      dateOfBirth,
-      gender,
-      profilePicture,
-    } = user;
+    const { _id, username, fullname, email, dateOfBirth, gender } = user;
 
     await ProfileModel.create({
       username,
       fullname,
-      profileHandler: _id,
+      userId: _id,
       ...(email && { email }),
       ...(dateOfBirth && { dateOfBirth }),
       ...(gender !== undefined && { gender }),
-      avatar: profilePicture ?? null,
     });
 
     return {

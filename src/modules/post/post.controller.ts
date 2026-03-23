@@ -8,10 +8,11 @@ export class PostController {
   constructor(private postService: PostService) {}
 
   public createPost = asyncHandler(async (req: Request, res: Response) => {
-    const userId = req.user?.userId as string;
 
-    if (!userId) {
-      throw new UnauthorizedError();
+    const userId = req.user?.userId;
+
+    if (typeof userId !== "string") {
+      throw new UnauthorizedError("Please login again for better experience");
     }
 
     // now we have sanitized and validated req.body here
@@ -23,11 +24,7 @@ export class PostController {
       });
     }
 
-    console.log(userId, ' and ', req.file)
-
     await this.postService.createPost(userId, req.body, req.file);
-
-    console.log('controller after service');
 
     return sendResponse({
       res,

@@ -11,6 +11,8 @@ const profileRepositoryInstance = new ProfileRepository();
 const profileServiceInstance = new ProfileService(profileRepositoryInstance);
 const profileControllerInstance = new ProfileController(profileServiceInstance);
 
-profileRouter.get('/', requireAuth, profileControllerInstance.myProfile);
+profileRouter.use(requireAuth);
+
+profileRouter.get("/", profileControllerInstance.myProfile);
 
 export default profileRouter;

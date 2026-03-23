@@ -41,3 +41,24 @@ export const signInUserValidation = (
 
   next();
 };
+
+
+
+// export const isProfilePictureGiven = (
+//   req: Request,
+//   _res: Response,
+//   next: NextFunction,
+// ) => {
+//   const result = signinUserSchema.safeParse(req.body as ISignInUser);
+
+//   if (!result.success) {
+//     return next(
+//       new BadRequestError("Invalid signin payload", result.error.flatten()),
+//     );
+//   }
+
+//   // sanitized + transformed data overwrite
+//   req.body = result.data;
+
+//   next();
+// };

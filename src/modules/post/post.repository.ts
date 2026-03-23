@@ -1,8 +1,12 @@
-import { BadRequestError } from "@common/errors/badRequest.error.js";
-import { UserModel } from "@modules/user/user.model.js";
-import { PostModel } from "./post.model.js";
 import type { UploadApiResponse } from "cloudinary";
 import type { NewPostDataType } from "./post.schema.js";
+
+import { InternalServerError } from "@common/errors/internal.error.js";
+import { BadRequestError } from "@common/errors/badRequest.error.js";
+
+import { ProfileModel } from "@modules/profile/profile.model.js";
+import { PostModel } from "./post.model.js";
+
 import { deleteAsset } from "@config/cloudinary.js";
 
 export class PostRepository {
@@ -12,10 +16,13 @@ export class PostRepository {
     cloudinaryResult: UploadApiResponse,
   ) {
     try {
-      const user = await UserModel.findById(userId).select("username");
+      const profile = await ProfileModel.findOne({ userId }).select({
+        _id: 1,
+        username: 1,
+      });
 
-      if (!user) {
-        throw new BadRequestError("Invalid userId");
+      if (!profile) {
+        throw new BadRequestError("Profile not found: Invalid userId");
       }
 
       const normalizeArray = (value: any) => {
@@ -36,8 +43,8 @@ export class PostRepository {
       ];
 
       const post = await PostModel.create({
-        authorId: userId,
-        authorUsernameSnapshot: user.username,
+        profileId: profile._id,
+        authorUsernameSnapshot: profile.username,
         image: {
           url: cloudinaryResult.secure_url,
           publicId: cloudinaryResult.public_id,
@@ -48,10 +55,26 @@ export class PostRepository {
         mentions,
       });
 
+      if (!post) {
+        throw new InternalServerError(
+          "Internal Server Error: Post uploading failed",
+        );
+      }
+
+      const updatedProfile = await ProfileModel.findOneAndUpdate(
+        { userId },
+        { $inc: { postCounts: 1 } },
+        { new: true },
+      );
+
+      if (!updatedProfile) {
+        console.error("Profile not found, increment failed");
+      }
+
       return post;
     } catch (error) {
       await deleteAsset(cloudinaryResult.public_id);
-      throw error;
+      throw new InternalServerError("Post Creation failed: Try again");
     }
   }
 }

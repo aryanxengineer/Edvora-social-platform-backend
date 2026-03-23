@@ -20,18 +20,7 @@ export class PostService {
       throw new InternalServerError("Failed to upload image");
     }
 
-    console.log(
-      "This is data from service layer ",
-      userId,
-      " and ",
-      data,
-      " and ",
-      uploadResult,
-    );
-
     await this.postRepository.saveCreatedPost(userId, data, uploadResult);
-
-    console.log("service after repo");
 
     return;
   }

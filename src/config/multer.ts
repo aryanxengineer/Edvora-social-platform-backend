@@ -1,4 +1,3 @@
-import { logger } from "@logger/index.js";
 import { type Request } from "express";
 import multer, { type FileFilterCallback } from "multer";
 
@@ -34,6 +33,7 @@ const fileFilter = (
   file: Express.Multer.File,
   cb: FileFilterCallback,
 ) => {
+
   const isImage = IMAGE_MIME_TYPES.includes(file.mimetype);
   const isVideo = VIDEO_MIME_TYPES.includes(file.mimetype);
 

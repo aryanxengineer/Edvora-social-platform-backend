@@ -11,7 +11,7 @@ const indexRouter: Express = express();
 indexRouter.use("/auth", authRouter);
 indexRouter.use("/users", userRouter);
 indexRouter.use("/posts", postRouter);
-indexRouter.use("/follow", followRouter);
-indexRouter.use("/profile", profileRouter);
+indexRouter.use("/follows", followRouter);
+indexRouter.use("/profiles", profileRouter);
 
 export default indexRouter;
