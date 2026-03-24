@@ -14,14 +14,18 @@ const followSchema: Schema<IFollow> = new Schema({
     type: Number,
     default: 0,
   },
-  followers: {
-    type: [Schema.Types.ObjectId],
-    default: null,
-  },
-  following: {
-    type: [Schema.Types.ObjectId],
-    default: null,
-  },
+  followers: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
+  following: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
 });
 
 export const FollowModel = model<IFollow>("Follow", followSchema);

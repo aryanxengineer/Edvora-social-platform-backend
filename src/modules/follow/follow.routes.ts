@@ -14,14 +14,14 @@ const followController = new FollowController(followService);
 
 followRouter.use(requireAuth);
 
-followRouter.post("/:profileId", followController.followProfile);
-followRouter.delete("/unfollow/:profileId", followController.unfollowProfile);
+followRouter.put("/:profileId", followController.followProfile);
+followRouter.put("/unfollow/:profileId", followController.unfollowProfile);
 followRouter.post(
   "/follow-back/:profileId",
   followController.followBackProfile,
 );
-followRouter.get("/followers/:userId", followController.allFollowerProfiles);
-followRouter.get("/following/:userId", followController.allFollowingProfiles);
+followRouter.get("/followers/:profileId", followController.profileFollowers);
+followRouter.get("/following/:profileId", followController.profileFollowings);
 // followRouter.get("/requests", followController.getFollowRequests);
 // followRouter.post("/requests/:userId/accept", followController.acceptFollowRequest);
 // followRouter.delete("/requests/:userId/reject", followController.rejectFollowRequest);
