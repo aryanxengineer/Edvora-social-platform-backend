@@ -1,8 +1,7 @@
-import { authConfig } from "@config/authConfig.js";
 import { hash, compare } from "bcrypt";
 
 export const hashValue = async (password: string): Promise<string> => {
-  return hash(password, authConfig.bcrypt.saltRounds);
+  return hash(password, 10);
 };
 
 export const compareValue = async (

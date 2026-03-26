@@ -50,6 +50,7 @@ export class PostRepository {
           publicId: cloudinaryResult.public_id,
         },
         caption: data.caption ?? "",
+        title: data.title ?? "",
         visibility: data.visibility || "public",
         hashtags,
         mentions,

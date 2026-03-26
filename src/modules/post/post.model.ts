@@ -52,6 +52,11 @@ const PostSchema = new Schema<IPost>(
       maxlength: 2200,
       trim: true,
     },
+    title: {
+      type: String,
+      maxlength: 200,
+      trim: true,
+    },
     visibility: {
       type: String,
       enum: ["public", "private"],

@@ -11,16 +11,16 @@ export class FollowController {
   // follow user functionality
   public followProfile = asyncHandler(async (req: Request, res: Response) => {
     const userId = req.user?.userId;
-    const otherProfileId = req.params;
+    const { profileId } = req.params;
 
     if (
       typeof userId !== "string" ||
-      typeof otherProfileId.profileId !== "string"
+      typeof profileId !== "string"
     ) {
       throw new UnauthorizedError("Please login again for better experience");
     }
 
-    await this.followService.followProfile(userId, otherProfileId.profileId);
+    await this.followService.followProfile(userId, profileId);
 
     return sendResponse({
       res,

@@ -14,6 +14,7 @@ export interface IPost extends Document {
   authorAvatar: string;
   image: PostImageType;
   caption?: string;
+  title?: string;
   hashtags: string[];
   mentions: string[];
   likesCount: number;
