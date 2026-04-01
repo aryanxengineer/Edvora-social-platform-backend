@@ -27,7 +27,7 @@ export const signupUserSchema = z
       .transform((v) => v.toLowerCase())
       .refine(
         (v) => !["admin", "support", "root"].includes(v),
-        "Username not allowed"
+        "Username not allowed",
       ),
 
     email: z
@@ -66,40 +66,70 @@ export const signupUserSchema = z
   .strict();
 
 // sign in schema or schema validation
+const emailSchema = z
+  .string()
+  .email("Invalid email")
+  .transform((v) => v.toLowerCase());
+
+const usernameSchema = z
+  .string()
+  .trim()
+  .min(3)
+  .max(20)
+  .regex(/^[a-zA-Z0-9_]+$/, "Invalid username")
+  .transform((v) => v.toLowerCase())
+  .refine(
+    (v) => !["admin", "support", "root"].includes(v),
+    "Username not allowed",
+  );
+
+const phoneSchema = z
+  .string()
+  .regex(/^\+?[1-9]\d{7,14}$/, "Invalid phone number");
+
 export const signinUserSchema = z
   .object({
-    username: z
-      .string()
-      .trim()
-      .min(3)
-      .max(20)
-      .regex(/^[a-zA-Z0-9_]+$/, "Invalid username")
-      .transform((v) => v.toLowerCase())
-      .refine(
-        (v) => !["admin", "support", "root"].includes(v),
-        "Username not allowed"
-      )
-      .optional(),
-
-    email: z
-      .string()
-      .email("Invalid email")
-      .transform((v) => v.toLowerCase())
-      .optional(),
-
-    phoneNumber: z
-      .string()
-      .regex(/^\+?[1-9]\d{7,14}$/, "Invalid phone number")
-      .optional(),
-
+    identifier: z.string().trim().min(3, "Identifier is required"),
     password: passwordSchema,
   })
-  .refine((data) => data.email || data.username || data.phoneNumber, {
-    path: ["email"],
-    message: "Either email or username or phone number is required",
-  })
-  .strict();
+  .transform((data, ctx) => {
+    const { identifier } = data;
 
+    const isEmail = emailSchema.safeParse(identifier);
+    if (isEmail.success) {
+      return {
+        type: "email",
+        identifier: isEmail.data,
+        password: data.password,
+      };
+    }
 
-  export type SignInDataType = z.infer<typeof signinUserSchema>;
-  export type SignUpDataType = z.infer<typeof signupUserSchema>;
+    const isPhone = phoneSchema.safeParse(identifier);
+    if (isPhone.success) {
+      return {
+        type: "phone",
+        identifier: identifier,
+        password: data.password,
+      };
+    }
+
+    const isUsername = usernameSchema.safeParse(identifier);
+    if (isUsername.success) {
+      return {
+        type: "username",
+        identifier: isUsername.data,
+        password: data.password,
+      };
+    }
+
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "Invalid email, username, or phone number",
+      path: ["identifier"],
+    });
+
+    return z.NEVER;
+  });
+
+export type SigninInputType = z.infer<typeof signinUserSchema>;
+export type SignupInputType = z.infer<typeof signupUserSchema>;

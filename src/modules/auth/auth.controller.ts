@@ -52,8 +52,10 @@ export class AuthController {
 
   // Sign in controller
   public signIn = asyncHandler(async (req: Request, res: Response) => {
-    const { user } = await this.authService.signIn(req.body);
-    console.log(user , ' controller mer koi error nhi aayi service se aane ke baad');
+
+    const signinInput = req.body;
+
+    const { user } = await this.authService.signIn(signinInput);
     
     req.session.user = {
       userId: user.id,

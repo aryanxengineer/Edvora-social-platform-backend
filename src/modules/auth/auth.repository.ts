@@ -5,7 +5,7 @@ import { UnauthorizedError } from "@common/errors/unauthorized.error.js";
 import { BadRequestError } from "@common/errors/badRequest.error.js";
 import { compareValue, hashValue } from "@common/utils/bcrypt.js";
 
-import type { SignInDataType } from "./auth.schema.js";
+import type { SigninInputType } from "./auth.schema.js";
 import { ProfileModel } from "@modules/profile/profile.model.js";
 
 export class AuthRepository {
@@ -75,12 +75,12 @@ export class AuthRepository {
   }
 
   // SignInService
-  async signIn(data: SignInDataType) {
+  async signIn(data: SigninInputType) {
     const query: any = {};
 
-    if (data.email) query.email = data.email;
-    else if (data.phoneNumber) query.phoneNumber = data.phoneNumber;
-    else if (data.username) query.username = data.username;
+    if (data.type === "email") query.email = data.identifier;
+    else if (data.type === "phone") query.phoneNumber = data.identifier;
+    else if (data.type === "username") query.username = data.identifier;
 
     const user = await UserModel.findOne(query).select("+password").lean();
 

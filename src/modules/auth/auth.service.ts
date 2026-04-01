@@ -1,5 +1,5 @@
-import type { ISignInUser, ISignUpUser } from "./auth.types.js";
 import type { AuthRepository } from "./auth.repository.js";
+import type { SigninInputType, SignupInputType } from "./auth.schema.js";
 
 export class AuthService {
   constructor(private readonly authRepository: AuthRepository) {}
@@ -11,17 +11,15 @@ export class AuthService {
   }
 
   // Sign up service
-  async signUp(input: ISignUpUser, device?: string) {
+  async signUp(input: SignupInputType, device?: string) {
     const user = await this.authRepository.signUp(input);
 
     return { user };
   }
 
   // Sign in service
-  async signIn(input: ISignInUser, device?: string) {
+  async signIn(input: SigninInputType, device?: string) {
     const user = await this.authRepository.signIn(input);
-        console.log(user , ' service mer koi error nhi aayi repo se aane ke baad');
-
 
     return { user };
   }
