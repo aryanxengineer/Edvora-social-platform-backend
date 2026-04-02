@@ -5,8 +5,8 @@ const PostSchema = new Schema<IPost>(
   {
     profileId: {
       type: Schema.Types.ObjectId,
+      ref: "Profile",
       required: true,
-      index: true,
     },
     authorUsernameSnapshot: {
       type: String,

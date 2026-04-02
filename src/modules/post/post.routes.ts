@@ -13,8 +13,8 @@ const postController = new PostController(postService);
 postRouter.use(requireAuth);
 
 postRouter.post("/new", uploadImage, postController.createPost);
-// postRouter.get("/:postId", postController.getPostById);
-// postRouter.delete("/:postId", postController.deletePost);
+postRouter.get("/:postId", postController.getPostById);
+postRouter.delete("/:postId", postController.deletePost);
 // postRouter.patch("/:postId", uploadImage, postController.updatePost);
 // postRouter.get("/user/:userId", postController.getPostsByUserId);
 // postRouter.get("/:postId/likes", postController.getPostLikes);

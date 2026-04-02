@@ -8,6 +8,9 @@ import { ProfileModel } from "@modules/profile/profile.model.js";
 import { PostModel } from "./post.model.js";
 
 import { deleteAsset } from "@config/cloudinary.js";
+import { NotFoundError } from "@common/errors/notFound.error.js";
+
+import mongoose from "mongoose";
 
 export class PostRepository {
   public async saveCreatedPost(
@@ -77,5 +80,55 @@ export class PostRepository {
       await deleteAsset(cloudinaryResult.public_id);
       throw new InternalServerError("Post Creation failed: Try again");
     }
+  }
+
+  public async getPostById(postId: string) {
+    const post = await PostModel.findById(postId);
+
+    if (!post) {
+      throw new NotFoundError("Post not found");
+    }
+
+    return post;
+  }
+
+  public async deletePost(postId: string) {
+    // 1. Fetch post first
+    const post = await PostModel.findById(postId);
+
+    if (!post) {
+      throw new NotFoundError("Post not found");
+    }
+
+    // 2. Delete post FIRST (source of truth)
+    const deleteResult = await PostModel.deleteOne({ _id: postId });
+
+    if (deleteResult.deletedCount === 0) {
+      throw new InternalServerError("Post deletion failed");
+    }
+
+    // 3. Update profile count (best-effort)
+    const profile = await ProfileModel.findOneAndUpdate(
+      { _id: post.profileId },
+      { $inc: { postCounts: -1 } },
+      { new: true },
+    );
+
+    if (!profile) {
+      // Don't fail request — log instead (important design decision)
+      console.error("Profile not found while decrementing post count", {
+        profileId: post.profileId,
+      });
+    }
+
+    // 4. Delete asset (external side-effect)
+    try {
+      await deleteAsset(post.image.publicId);
+    } catch (error) {
+      // Never break API because of external failure
+      console.error("Asset deletion failed", error);
+    }
+
+    return;
   }
 }

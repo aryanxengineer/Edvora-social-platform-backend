@@ -20,6 +20,7 @@ const profileSchema = new Schema<IProfile>(
     userId: {
       type: Schema.Types.ObjectId,
       required: true,
+      ref: "User",
     },
     postCounts: { type: Number, default: 0 },
     reelCounts: { type: Number, default: 0 },

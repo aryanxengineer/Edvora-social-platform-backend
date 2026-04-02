@@ -3,12 +3,12 @@ import type { PostService } from "./post.service.js";
 import type { Request, Response } from "express";
 import { sendResponse } from "@common/utils/sendResponse.js";
 import { UnauthorizedError } from "@common/errors/unauthorized.error.js";
+import { BadRequestError } from "@common/errors/badRequest.error.js";
 
 export class PostController {
   constructor(private postService: PostService) {}
 
   public createPost = asyncHandler(async (req: Request, res: Response) => {
-
     const userId = req.user?.userId;
 
     if (typeof userId !== "string") {
@@ -32,4 +32,40 @@ export class PostController {
       message: "Post created successfully",
     });
   });
+
+  public getPostById = asyncHandler(async (req: Request, res: Response) => {
+    const { postId } = req.params;
+
+    if (!postId) {
+      throw new BadRequestError("Post id must be provided in the url");
+    }
+
+    const post = await this.postService.getPostById(postId);
+
+    return sendResponse({
+      res,
+      statusCode: 200,
+      message: "Successfully got the single post",
+      data: post,
+    });
+  });
+
+
+  public deletePost = asyncHandler(async (req: Request, res: Response) => {
+    const { postId } = req.params;
+
+    if (!postId) {
+      throw new BadRequestError("Post id must be provided in the url");
+    }
+
+    const post = await this.postService.deletePost(postId);
+
+    return sendResponse({
+      res,
+      statusCode: 200,
+      message: "Successfully deleted the single post"
+    });
+  });
+
+
 }

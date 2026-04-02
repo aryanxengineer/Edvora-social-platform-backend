@@ -1,4 +1,4 @@
-import { uploadFromBuffer } from "@config/cloudinary.js";
+import { deleteAsset, uploadFromBuffer } from "@config/cloudinary.js";
 import type { PostRepository } from "./post.repository.js";
 import { InternalServerError } from "@common/errors/internal.error.js";
 import type { NewPostDataType } from "./post.schema.js";
@@ -21,6 +21,18 @@ export class PostService {
     }
 
     await this.postRepository.saveCreatedPost(userId, data, uploadResult);
+
+    return;
+  }
+
+  public async getPostById(postId: string) {
+    const post = await this.postRepository.getPostById(postId);
+
+    return post;
+  }
+
+  public async deletePost(postId: string) {
+    await this.postRepository.deletePost(postId);
 
     return;
   }
