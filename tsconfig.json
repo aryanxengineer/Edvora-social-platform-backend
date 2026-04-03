@@ -56,6 +56,8 @@
       "@types/*": ["types/*"]
     },
 
+    "ignoreDeprecations": "6.0",
+
     "typeRoots": ["./src/types", "./node_modules/@types"]
   },
 
