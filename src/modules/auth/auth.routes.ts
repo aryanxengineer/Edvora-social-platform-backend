@@ -8,6 +8,7 @@ import {
   signInUserValidation,
   signupUserValidation,
 } from "./auth.middleware.js";
+
 import { authRateLimiter } from "@middlewares/rateLimit.middleware.js";
 import { requireAuth } from "@middlewares/authorization.middleware.js";
 import { uploadImage } from "@config/multer.js";
@@ -16,7 +17,6 @@ const authRouter = Router();
 
 // Dependency Injections for controller
 const authRepository = new AuthRepository();
-
 const authService = new AuthService(authRepository);
 const authController = new AuthController(authService);
 
