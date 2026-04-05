@@ -8,5 +8,6 @@ declare module "express-session" {
       device?: string;
       ip?: string;
     };
+    createdAt?: number;
   }
 }

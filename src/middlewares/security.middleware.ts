@@ -17,7 +17,7 @@ export const applyCors = (app: Express) => {
     cors({
       origin: (origin, callback) => {
         const allowedOrigins = [
-          "http://localhost:5000",
+          "http://localhost:5173",
           "https://yourdomain.com",
         ];
 

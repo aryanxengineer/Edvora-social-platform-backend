@@ -25,7 +25,7 @@ export class AuthController {
       message: "User details",
       data: user,
     });
-  })
+  });
 
   // Sign up controller
   public signUp = asyncHandler(async (req: Request, res: Response) => {
@@ -52,18 +52,32 @@ export class AuthController {
 
   // Sign in controller
   public signIn = asyncHandler(async (req: Request, res: Response) => {
-
     const signinInput = req.body;
 
     const { user } = await this.authService.signIn(signinInput);
-    
+
+    req.session.regenerate((err) => {
+
+      if(err) {
+        throw new UnauthorizedError("Unauthorize access login again");
+      }
+
+
+      req.session.user = {
+        userId: user.id,
+        ...(user.email && { email: user.email }),
+        ...(req.headers["user-agent"] && { device: req.headers["user-agent"] }),
+        ...(req.ip && { ip: req.ip }),
+      };
+    });
+
     req.session.user = {
       userId: user.id,
       ...(user.email && { email: user.email }),
       ...(req.headers["user-agent"] && { device: req.headers["user-agent"] }),
       ...(req.ip && { ip: req.ip }),
     };
-    
+
     // Track session for multi-device mapping
     const sessionId = req.sessionID;
     await redis.sAdd(`user:${user.id}:sessions`, sessionId);

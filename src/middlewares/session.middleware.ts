@@ -20,6 +20,7 @@ export const sessionMiddleware = session({
   resave: false,
   saveUninitialized: false,
   rolling: true, // refresh expiry on activity
+  
   cookie: {
     httpOnly: true,
     secure: NODE_ENV === "production",
