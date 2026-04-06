@@ -49,8 +49,6 @@ export const signupUserSchema = z
       return age >= 13;
     }, "User must be at least 13 years old"),
 
-    profilePicture: z.string().url().optional().nullable(),
-
     gender: z
       .number()
       .int()

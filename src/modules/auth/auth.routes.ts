@@ -23,7 +23,7 @@ const authController = new AuthController(authService);
 authRouter.use(authRateLimiter);
 
 authRouter.get("/me", requireAuth, authController.getMyDetails);
-authRouter.post("/signup",uploadImage, signupUserValidation, authController.signUp);
+authRouter.post("/signup", signupUserValidation, authController.signUp);
 authRouter.post("/signin", signInUserValidation, authController.signIn);
 authRouter.post(
   "/signout-single-device",

@@ -8,17 +8,18 @@ export const applyHelmet = (app: Express) => {
     helmet({
       contentSecurityPolicy: false, // handled by frontend CDN
       crossOriginEmbedderPolicy: false,
-    })
+    }),
   );
 };
 
 export const applyCors = (app: Express) => {
   app.use(
     cors({
+      // origin: "*",
       origin: (origin, callback) => {
         const allowedOrigins = [
           "http://localhost:5173",
-          "https://yourdomain.com",
+          
         ];
 
         // Allow server-to-server & mobile apps
@@ -32,14 +33,6 @@ export const applyCors = (app: Express) => {
       },
       credentials: true,
       methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-    })
-  );
-};
-
-export const applyMongoSanitize = (app: Express) => {
-  app.use(
-    mongoSanitize({
-      replaceWith: "_",
-    })
+    }),
   );
 };

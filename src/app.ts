@@ -3,7 +3,6 @@ import express, { type Express } from "express";
 import {
   applyCors,
   applyHelmet,
-  applyMongoSanitize,
 } from "@middlewares/security.middleware.js";
 
 import { absoluteExpirySessionAt } from "@middlewares/absoluteExpiry.middleware.js";
@@ -30,7 +29,6 @@ app.set("trust proxy", 1);
  */
 applyHelmet(app);
 applyCors(app);
-applyMongoSanitize(app);
 
 /**
  * -------------------------------
