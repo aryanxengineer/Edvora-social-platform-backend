@@ -11,30 +11,25 @@ import {
 
 import { authRateLimiter } from "@middlewares/rateLimit.middleware.js";
 import { requireAuth } from "@middlewares/authorization.middleware.js";
-import { uploadImage } from "@config/multer.js";
+import { ProfileRepository } from "@modules/profile/profile.repository.js";
+import { ProfileService } from "@modules/profile/profile.service.js";
 
 const authRouter = Router();
 
-// Dependency Injections for controller
-const authRepository = new AuthRepository();
-const authService = new AuthService(authRepository);
+const profileRepo = new ProfileRepository();
+const profileService = new ProfileService(profileRepo);
+
+const authRepo = new AuthRepository();
+const authService = new AuthService(authRepo, profileService);
+
 const authController = new AuthController(authService);
 
 authRouter.use(authRateLimiter);
 
-authRouter.get("/me", requireAuth, authController.getMyDetails);
+authRouter.get("/me", requireAuth, authController.me);
 authRouter.post("/signup", signupUserValidation, authController.signUp);
 authRouter.post("/signin", signInUserValidation, authController.signIn);
-authRouter.post(
-  "/signout-single-device",
-  requireAuth,
-  authController.signOutSingleDevice,
-);
-authRouter.post(
-  "/signout-all-devices",
-  requireAuth,
-  authController.signOutAllDevices,
-);
+authRouter.post("/signout", requireAuth, authController.signOut);
 // authRouter.post("/verify-email", authController.verifyEmail);
 // authRouter.post("/resend-verification-email", authController.resendVerificationEmail);
 // authRouter.post("/forgot-password", authController.forgotPassword);

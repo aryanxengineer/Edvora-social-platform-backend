@@ -1,163 +1,79 @@
-import type { Request, Response } from "express";
-
-// Import Auth Service Type
-import type { AuthService } from "./auth.service.js";
-
-// Import Utility Functions
 import { asyncHandler } from "@common/utils/asyncHandler.js";
+import { AuthService } from "./auth.service.js";
+import { Request, Response } from "express";
 import { sendResponse } from "@common/utils/sendResponse.js";
-import { redis } from "@config/redis.js";
 import { UnauthorizedError } from "@common/errors/unauthorized.error.js";
 
-// Auth Controller Class
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly service: AuthService) {}
 
-  // Get user /me
-  public getMyDetails = asyncHandler(async (req: Request, res: Response) => {
-    const userId = req.user?.userId as string;
-
-    const user = await this.authService.getMyDetails(userId);
-
-    return sendResponse({
-      res,
-      statusCode: 200,
-      message: "User details",
-      data: user,
-    });
-  });
-
-  // Sign up controller
-  public signUp = asyncHandler(async (req: Request, res: Response) => {
-    const { user } = await this.authService.signUp(req.body);
+  signUp = asyncHandler(async (req: Request, res: Response) => {
+    const user = await this.service.register(req.body);
 
     req.session.user = {
       userId: user.id,
-      ...(user.email && { email: user.email }),
-      device: req.headers["user-agent"] || "",
-      ip: req.ip || "",
     };
-
-    // Track session for multi-device mapping
-    const sessionId = req.sessionID;
-    await redis.sAdd(`user:${user.id}:sessions`, sessionId);
 
     return sendResponse({
       res,
       statusCode: 201,
-      message: "User registered successfully",
+      message: "User registered",
       data: user,
     });
   });
 
-  // Sign in controller
-  public signIn = asyncHandler(async (req: Request, res: Response) => {
-    const signinInput = req.body;
+  signIn = asyncHandler(async (req: Request, res: Response) => {
+    const user = await this.service.login(req.body);
 
-    const { user } = await this.authService.signIn(signinInput);
+    await new Promise<void>((resolve, reject) => {
+      req.session.regenerate((err) => {
+        if (err) return reject(new UnauthorizedError("Session error"));
 
-    req.session.regenerate((err) => {
+        req.session.user = {
+          userId: user.id,
+        };
 
-      if(err) {
-        throw new UnauthorizedError("Unauthorize access login again");
-      }
-
-
-      req.session.user = {
-        userId: user.id,
-        ...(user.email && { email: user.email }),
-        ...(req.headers["user-agent"] && { device: req.headers["user-agent"] }),
-        ...(req.ip && { ip: req.ip }),
-      };
+        req.session.save((err) => {
+          if (err) return reject(err);
+          resolve();
+        });
+      });
     });
-
-    req.session.user = {
-      userId: user.id,
-      ...(user.email && { email: user.email }),
-      ...(req.headers["user-agent"] && { device: req.headers["user-agent"] }),
-      ...(req.ip && { ip: req.ip }),
-    };
-
-    // Track session for multi-device mapping
-    const sessionId = req.sessionID;
-    await redis.sAdd(`user:${user.id}:sessions`, sessionId);
 
     return sendResponse({
       res,
       statusCode: 200,
-      message: "User login successfully",
+      message: "Login successful",
       data: user,
     });
   });
 
-  // Sign out controller
-  public signOutSingleDevice = asyncHandler(
-    async (req: Request, res: Response) => {
-      const userId = req.session.user?.userId;
-      const sessionId = req.sessionID;
+  me = asyncHandler(async (req: Request, res: Response) => {
+    const userId = req.session.user?.userId;
 
-      if (userId) {
-        // Remove this session from user's session set
-        await redis.sRem(`user:${userId}:sessions`, sessionId);
-      }
+    if (!userId) {
+      throw new UnauthorizedError();
+    }
 
-      req.session.destroy((err) => {
-        if (err) {
-          return res.status(500).json({ message: "Logout failed" });
-        }
+    const user = await this.service.getUser(userId);
 
-        res.clearCookie("sessionId");
+    return sendResponse({
+      res,
+      statusCode: 200,
+      message: "User fetched",
+      data: user,
+    });
+  });
 
-        return sendResponse({
-          res,
-          statusCode: 200,
-          message: "Logged out from current device",
-        });
-      });
-    },
-  );
+  signOut = asyncHandler(async (req: Request, res: Response) => {
+    req.session.destroy(() => {});
 
-  // Sign out from all devices controller
-  public signOutAllDevices = asyncHandler(
-    async (req: Request, res: Response) => {
-      const userId = req.session.user?.userId;
+    res.clearCookie("connect.sid");
 
-      if (!userId) {
-        throw new UnauthorizedError();
-      }
-
-      // Get all active sessions for this user
-      const sessionIds = await redis.sMembers(`user:${userId}:sessions`);
-
-      if (sessionIds.length > 0) {
-        // Delete each session from Redis
-        const keysToDelete = sessionIds.map((id) => `sess:${id}`);
-        await redis.del(keysToDelete);
-
-        // Delete user's session set
-        await redis.del(`user:${userId}:sessions`);
-      }
-
-      // Destroy current session
-      req.session.destroy(() => {});
-      res.clearCookie("connect.sid");
-
-      return sendResponse({
-        res,
-        statusCode: 200,
-        message: "Logged out from all devices",
-      });
-    },
-  );
-
-  // Verify Email controller
-  // public verifyEmail = asyncHandler(async (req: Request, res: Response) => {
-  //   await this.authService.verifyEmail(req.body);
-
-  //   return sendResponse({
-  //     res,
-  //     statusCode: 200,
-  //     message: "Email verified successfully",
-  //   });
-  // });
+    return sendResponse({
+      res,
+      statusCode: 200,
+      message: "Logged out",
+    });
+  });
 }

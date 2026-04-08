@@ -9,13 +9,13 @@ export const validateNewPost = (
 ) => {
 
   const formattedPostData = {
-    imageUrl: req.file,
-    title: req.body?.title,
-    caption: req.body?.caption,
-    location: req.body?.location,
-    tags: req.body?.tags,
-    mentions: req.body?.mentions,
-  }
+  imageUrl: req.file?.originalname, // FIX
+  title: req.body?.title,
+  caption: req.body?.caption,
+  location: req.body?.location,
+  tags: req.body?.tags,
+  mentions: req.body?.mentions,
+};
   const result = newPostSchema.safeParse(formattedPostData);
 
   if (!result.success) {

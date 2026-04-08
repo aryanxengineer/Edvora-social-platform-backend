@@ -1,7 +1,8 @@
 import type { Visibility } from "@modules/post/post.types.js";
 import type mongoose from "mongoose";
 
-export interface IProfile extends Document {
+export interface IProfile {
+  _id: string;
   username: string;
   fullname?: string;
   userId: mongoose.Types.ObjectId;

@@ -27,26 +27,6 @@ const PostSchema = new Schema<IPost>(
       },
     },
 
-    likesCount: {
-      type: Number,
-      default: 0,
-    },
-
-    commentsCount: {
-      type: Number,
-      default: 0,
-    },
-
-    sharesCount: {
-      type: Number,
-      default: 0,
-    },
-
-    savesCount: {
-      type: Number,
-      default: 0,
-    },
-
     caption: {
       type: String,
       maxlength: 2200,
@@ -67,8 +47,6 @@ const PostSchema = new Schema<IPost>(
     mentions: {
       type: [String],
     },
-    isReported: { type: Boolean, default: false },
-    reportCount: { type: Number, default: 0 },
 
     deletedAt: {
       type: Date,
@@ -79,7 +57,7 @@ const PostSchema = new Schema<IPost>(
     timestamps: true,
     versionKey: false,
   },
-);
+); 
 
 PostSchema.index({ authorId: 1, createdAt: -1 });
 PostSchema.index({ hashtags: 1, createdAt: -1 });

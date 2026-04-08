@@ -6,9 +6,11 @@ export const requireAuth = (
   res: Response,
   next: NextFunction,
 ) => {
+
+  console.log(req.session.user)
+
   if (!req.session?.user) {
     throw new UnauthorizedError();
-    return;
   }
 
   req.user = {

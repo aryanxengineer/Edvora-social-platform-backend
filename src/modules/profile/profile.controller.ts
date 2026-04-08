@@ -1,31 +1,26 @@
 import type { Request, Response } from "express";
-
 import { asyncHandler } from "@common/utils/asyncHandler.js";
-import type { ProfileService } from "./profile.service.js";
 import { sendResponse } from "@common/utils/sendResponse.js";
 import { UnauthorizedError } from "@common/errors/unauthorized.error.js";
+import type { ProfileService } from "./profile.service.js";
 
 export class ProfileController {
-  constructor(private profileService: ProfileService) {}
+  constructor(private service: ProfileService) {}
 
-  // fetching user profile
-  public myProfile = asyncHandler(async (req: Request, res: Response) => {
-
-    const userId = req.user?.userId;
+  myProfile = asyncHandler(async (req: Request, res: Response) => {
+    const userId = req.session.user?.userId;
 
     if (!userId) {
-      throw new UnauthorizedError(
-        "Unauthorize user login again for new userId",
-      );
+      throw new UnauthorizedError("Unauthorized");
     }
 
-    const profileData = await this.profileService.myProfile(userId);
+    const profile = await this.service.getMyProfile(userId);
 
     return sendResponse({
       res,
       statusCode: 200,
-      message: "UserProfile fetched successfully",
-      data: profileData,
+      message: "Profile fetched",
+      data: profile,
     });
   });
 }

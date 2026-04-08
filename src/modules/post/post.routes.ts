@@ -4,10 +4,12 @@ import { PostController } from "./post.controller.js";
 import { PostRepository } from "./post.repository.js";
 import { uploadImage } from "@config/multer.js";
 import { requireAuth } from "@middlewares/authorization.middleware.js";
+import { ProfileRepository } from "@modules/profile/profile.repository.js";
 
 const postRouter = Router();
 const postRepository = new PostRepository();
-const postService = new PostService(postRepository);
+const profileRepository = new ProfileRepository();
+const postService = new PostService(postRepository, profileRepository);
 const postController = new PostController(postService);
 
 postRouter.use(requireAuth);

@@ -17,12 +17,6 @@ export interface IPost extends Document {
   title?: string;
   hashtags: string[];
   mentions: string[];
-  likesCount: number;
-  commentsCount: number;
-  sharesCount: number;
-  savesCount: number;
-  isReported: boolean;
-  reportCount: number;
   visibility: Visibility;
   deletedAt: Date | null;
   createdAt: Date;
