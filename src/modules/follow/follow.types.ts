@@ -1,9 +1,8 @@
 import type mongoose from "mongoose";
 
 export interface IFollow {
-    profileId: mongoose.Types.ObjectId;
-    followerCounts: number;
-    followingCounts: number;
-    followers: mongoose.Types.ObjectId[] | [];
-    following: mongoose.Types.ObjectId[] | [];
+  _id: string;
+  followerId: mongoose.Types.ObjectId; // who follows
+  followingId: mongoose.Types.ObjectId; // whom they follow
+  createdAt: Date;
 }

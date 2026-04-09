@@ -13,4 +13,20 @@ export class PostRepository {
   async deleteById(postId: string, session?: mongoose.ClientSession) {
     return PostModel.deleteOne({ _id: postId });
   }
+
+  async incrementLikeCount(postId: string, session?: mongoose.ClientSession) {
+    return PostModel.updateOne(
+      { _id: postId },
+      { $inc: { likesCount: 1 } },
+      { session },
+    );
+  }
+
+  async decrementLikeCount(postId: string, session?: mongoose.ClientSession) {
+    return PostModel.updateOne(
+      { _id: postId },
+      { $inc: { likesCount: -1 } },
+      { session },
+    );
+  }
 }

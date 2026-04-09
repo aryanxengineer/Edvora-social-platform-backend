@@ -11,6 +11,8 @@ export interface IProfile {
   gender: number;
   avatar: string | null;
   bio?: string;
+  followersCount: number;
+  followingCount: number;
   postCounts: number;
   reelCounts: number;
   savedPostCounts: number;

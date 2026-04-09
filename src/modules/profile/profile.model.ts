@@ -11,7 +11,7 @@ const profileSchema = new Schema<IProfile>(
       unique: true,
       trim: true,
       lowercase: true,
-      index: true
+      index: true,
     },
 
     email: {
@@ -19,7 +19,7 @@ const profileSchema = new Schema<IProfile>(
       unique: true,
       lowercase: true,
       trim: true,
-      sparse: true // important for optional unique field
+      sparse: true, // important for optional unique field
     },
 
     userId: {
@@ -27,8 +27,11 @@ const profileSchema = new Schema<IProfile>(
       required: true,
       ref: "User",
       unique: true, // 1:1 relation enforced
-      index: true
+      index: true,
     },
+
+    followersCount: { type: Number, default: 0 },
+    followingCount: { type: Number, default: 0 },
 
     postCounts: { type: Number, default: 0 },
     reelCounts: { type: Number, default: 0 },
@@ -49,7 +52,7 @@ const profileSchema = new Schema<IProfile>(
   {
     timestamps: true,
     versionKey: false,
-  }
+  },
 );
 
 export const ProfileModel = model<IProfile>("Profile", profileSchema);

@@ -1,31 +1,29 @@
-import { Schema, model } from "mongoose";
-import { type IFollow } from "./follow.types.js";
+import mongoose, { Schema } from "mongoose";
+import type { IFollow } from "./follow.types.js";
 
-const followSchema: Schema<IFollow> = new Schema({
-  profileId: {
-    type: Schema.Types.ObjectId,
-    required: true,
-  },
-  followerCounts: {
-    type: Number,
-    default: 0,
-  },
-  followingCounts: {
-    type: Number,
-    default: 0,
-  },
-  followers: [
-    {
+const followSchema = new Schema<IFollow>(
+  {
+    followerId: {
       type: Schema.Types.ObjectId,
-      ref: "User",
+      required: true,
+      index: true,
     },
-  ],
-  following: [
-    {
+    followingId: {
       type: Schema.Types.ObjectId,
-      ref: "User",
+      required: true,
+      index: true,
     },
-  ],
-});
+  },
+  {
+    timestamps: { createdAt: true, updatedAt: false },
+    versionKey: false,
+  }
+);
 
-export const FollowModel = model<IFollow>("Follow", followSchema);
+// 🚀 Prevent duplicate follows
+followSchema.index({ followerId: 1, followingId: 1 }, { unique: true });
+
+// 🚀 Fast follower queries
+followSchema.index({ followingId: 1, createdAt: -1 });
+
+export const FollowModel = mongoose.model<IFollow>("Follow", followSchema);

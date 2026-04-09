@@ -1,84 +1,39 @@
 import type { Request, Response } from "express";
+import { asyncHandler } from "@common/utils/asyncHandler.js";
+import { sendResponse } from "@common/utils/sendResponse.js";
+import { UnauthorizedError } from "@common/errors/unauthorized.error.js";
 import type { FollowService } from "./follow.service.js";
 
-import { asyncHandler } from "@common/utils/asyncHandler.js";
-import { UnauthorizedError } from "@common/errors/unauthorized.error.js";
-import { sendResponse } from "@common/utils/sendResponse.js";
-
 export class FollowController {
-  constructor(private followService: FollowService) {}
+  constructor(private service: FollowService) {}
 
-  // follow user functionality
-  public followProfile = asyncHandler(async (req: Request, res: Response) => {
-    const userId = req.user?.userId;
-    const { profileId } = req.params;
+  follow = asyncHandler(async (req: Request, res: Response) => {
+    const userId = req.session.user?.userId;
+    const { targetUserId } = req.body;
 
-    if (
-      typeof userId !== "string" ||
-      typeof profileId !== "string"
-    ) {
-      throw new UnauthorizedError("Please login again for better experience");
-    }
+    if (!userId) throw new UnauthorizedError();
 
-    await this.followService.followProfile(userId, profileId);
+    await this.service.follow(userId, targetUserId);
 
     return sendResponse({
       res,
-      statusCode: 201,
-      message: "Follow a profile successfully",
+      statusCode: 200,
+      message: "Followed successfully",
     });
   });
 
-  // follow user functionality
-  public unfollowProfile = asyncHandler(async (req: Request, res: Response) => {
-    const userId = req.user?.userId;
-    const otherProfileId = req.params;
+  unfollow = asyncHandler(async (req: Request, res: Response) => {
+    const userId = req.session.user?.userId;
+    const { targetUserId } = req.body;
 
-    if (
-      typeof userId !== "string" ||
-      typeof otherProfileId.profileId !== "string"
-    ) {
-      throw new UnauthorizedError("Please login again for better experience");
-    }
+    if (!userId) throw new UnauthorizedError();
 
-    await this.followService.unfollowProfile(userId, otherProfileId.profileId);
+    await this.service.unfollow(userId, targetUserId);
 
     return sendResponse({
       res,
-      statusCode: 201,
-      message: "Unfollow a profile successfully",
+      statusCode: 200,
+      message: "Unfollowed successfully",
     });
   });
-
-  // follow user functionality
-  public followBackProfile = asyncHandler(
-    async (req: Request, res: Response) => {},
-  );
-
-  // follow user functionality
-  public profileFollowers = asyncHandler(
-    async (req: Request, res: Response) => {
-      const profile = req.params;
-
-      if (typeof profile.profileId !== "string") {
-        throw new UnauthorizedError("Please login again for better experience");
-      }
-
-      const followersData = await this.followService.profileFollowers(
-        profile.profileId,
-      );
-
-      return sendResponse({
-        res,
-        statusCode: 200,
-        message: "Fetched follower data successfully",
-        data: followersData
-      });
-    },
-  );
-
-  // follow user functionality
-  public profileFollowings = asyncHandler(
-    async (req: Request, res: Response) => {},
-  );
 }

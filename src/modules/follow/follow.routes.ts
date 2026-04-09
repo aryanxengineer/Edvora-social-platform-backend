@@ -1,43 +1,21 @@
 import { Router } from "express";
-
-import { FollowRepository } from "./follow.repository.js";
 import { FollowController } from "./follow.controller.js";
 import { FollowService } from "./follow.service.js";
+import { FollowRepository } from "./follow.repository.js";
+import { ProfileRepository } from "@modules/profile/profile.repository.js";
 import { requireAuth } from "@middlewares/authorization.middleware.js";
 
-const followRouter = Router();
+const router = Router();
 
-// Dependency Injections for controller
-const followRepository = new FollowRepository();
-const followService = new FollowService(followRepository);
-const followController = new FollowController(followService);
+const followRepo = new FollowRepository();
+const profileRepo = new ProfileRepository();
 
-followRouter.use(requireAuth);
+const service = new FollowService(followRepo, profileRepo);
+const controller = new FollowController(service);
 
-followRouter.put("/:profileId", followController.followProfile);
-followRouter.put("/unfollow/:profileId", followController.unfollowProfile);
-followRouter.post(
-  "/follow-back/:profileId",
-  followController.followBackProfile,
-);
-followRouter.get("/followers/:profileId", followController.profileFollowers);
-followRouter.get("/following/:profileId", followController.profileFollowings);
-// followRouter.get("/requests", followController.getFollowRequests);
-// followRouter.post("/requests/:userId/accept", followController.acceptFollowRequest);
-// followRouter.delete("/requests/:userId/reject", followController.rejectFollowRequest);
-// followRouter.get("/suggestions", followController.getFollowSuggestions);
+router.use(requireAuth);
 
-export default followRouter;
+router.post("/", controller.follow);
+router.delete("/", controller.unfollow);
 
-/*
-
-- `POST /follow/:userId`
-- `DELETE /unfollow/:userId`
-- `GET /followers/:userId`
-- `GET /following/:userId`
-- `GET /follow/requests`
-- `POST /follow/requests/:userId/accept`
-- `DELETE /follow/requests/:userId/reject`
-- `GET /follow/suggestions`
-
-*/
+export default router;

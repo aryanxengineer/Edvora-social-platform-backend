@@ -10,21 +10,61 @@ export class ProfileRepository {
     return ProfileModel.create(data);
   }
 
-  async incrementPostCount(
-    profileId: string,
-  ) {
+  async incrementPostCount(profileId: string) {
     return ProfileModel.updateOne(
       { _id: profileId },
-      { $inc: { postCounts: 1 } }
+      { $inc: { postCounts: 1 } },
     );
   }
 
-  async decrementPostCount(
-    profileId: string,
-  ) {
+  async decrementPostCount(profileId: string) {
     return ProfileModel.updateOne(
       { _id: profileId },
       { $inc: { postCounts: -1 } },
+    );
+  }
+
+  async incrementFollowersCount(
+    userId: string,
+    session?: mongoose.ClientSession,
+  ) {
+    return ProfileModel.updateOne(
+      { userId },
+      { $inc: { followersCount: 1 } },
+      { session },
+    );
+  }
+
+  async decrementFollowersCount(
+    userId: string,
+    session?: mongoose.ClientSession,
+  ) {
+    return ProfileModel.updateOne(
+      { userId },
+      { $inc: { followersCount: -1 } },
+      { session },
+    );
+  }
+
+  async incrementFollowingCount(
+    userId: string,
+    session?: mongoose.ClientSession,
+  ) {
+    return ProfileModel.updateOne(
+      { userId },
+      { $inc: { followingCount: 1 } },
+      { session },
+    );
+  }
+
+  async decrementFollowingCount(
+    userId: string,
+    session?: mongoose.ClientSession,
+  ) {
+    return ProfileModel.updateOne(
+      { userId },
+      { $inc: { followingCount: -1 } },
+      { session },
     );
   }
 }

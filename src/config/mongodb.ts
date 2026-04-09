@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { MONGO_URI } from "./env.js";
+import { MONGO_URI, NODE_ENV } from "./env.js";
 
 // CONFIGURATION (MONOLITH SAFE)
 
@@ -23,7 +23,7 @@ const connectMongo = async (): Promise<void> => {
 
   try {
     await mongoose.connect(MONGO_URI as string, {
-      dbName: "Edvora_db",
+      dbName: `${NODE_ENV === "production" ? "Databse_Edvora" : "development_db"}`,
 
       // Pooling (Monolith tuned)
       maxPoolSize: 20, // concurrent requests

@@ -2,45 +2,51 @@ import type { Request, Response } from "express";
 import type { LikeService } from "./like.service.js";
 
 import { asyncHandler } from "@common/utils/asyncHandler.js";
-import { UnauthorizedError } from "@common/errors/unauthorized.error.js";
 import { sendResponse } from "@common/utils/sendResponse.js";
+import { UnauthorizedError } from "@common/errors/unauthorized.error.js";
+import { BadRequestError } from "@common/errors/badRequest.error.js";
 
 export class LikeController {
-  constructor(private likeService: LikeService) {}
+  constructor(private service: LikeService) {}
 
-  // Like a post
-  public likePost = asyncHandler(async (req: Request, res: Response) => {
-    const userId = req.user?.userId;
+  likePost = asyncHandler(async (req: Request, res: Response) => {
+    const userId = req.session.user?.userId;
     const { postId } = req.params;
 
-    if (typeof userId !== "string" || typeof postId !== "string") {
-      throw new UnauthorizedError("Please login again for better experience");
+    if (!userId) {
+      throw new UnauthorizedError();
+    }
+    if (!postId) {
+      throw new BadRequestError();
     }
 
-    await this.likeService.likePost(userId, postId);
+    await this.service.likePost(userId, postId);
 
     return sendResponse({
       res,
-      statusCode: 201,
-      message: "Post liked successfully",
+      statusCode: 200,
+      message: "Post liked",
     });
   });
 
-  // Unlike a post
-  public unlikePost = asyncHandler(async (req: Request, res: Response) => {
-    const userId = req.user?.userId;
+  unlikePost = asyncHandler(async (req: Request, res: Response) => {
+    const userId = req.session.user?.userId;
     const { postId } = req.params;
 
-    if (typeof userId !== "string" || typeof postId !== "string") {
-      throw new UnauthorizedError("Please login again for better experience");
+    if (!userId) {
+      throw new UnauthorizedError();
     }
 
-    await this.likeService.unlikePost(userId, postId);
+    if (!postId) {
+      throw new BadRequestError();
+    }
+
+    await this.service.unlikePost(userId, postId);
 
     return sendResponse({
       res,
-      statusCode: 201,
-      message: "Post unliked successfully",
+      statusCode: 200,
+      message: "Post unliked",
     });
   });
 }

@@ -1,50 +1,16 @@
-import { BadRequestError } from "@common/errors/badRequest.error.js";
-import { PostModel } from "@modules/post/post.model.js";
-import { ProfileModel } from "@modules/profile/profile.model.js";
+import mongoose from "mongoose";
+import LikeModel from "./like.model.js";
 
 export class LikeRepository {
-  constructor() {}
+  async createLike(userId: string, postId: string, session?: mongoose.ClientSession) {
+    return LikeModel.create([{ userId, postId }], { session }).then(r => r[0]);
+  }
 
-  public likePost = async (userId: string, postId: string) => {
-    const userProfile = await ProfileModel.findOne({
-      userId,
-    }).select("_id username avatar");
+  async deleteLike(userId: string, postId: string, session?: mongoose.ClientSession) {
+    return LikeModel.deleteOne({ userId, postId }, { session });
+  }
 
-    const post = await PostModel.findOneAndUpdate(
-      {
-        _id: postId,
-      },
-      {
-        $inc: { likesCount: 1 },
-      },
-      { new: true },
-    );
-
-    return;
-  };
-
-  public unlikePost = async (userId: string, postId: string) => {
-    const userProfile = await ProfileModel.findOne({
-      userId,
-    }).select("_id username avatar");
-
-    const post = await PostModel.findOneAndUpdate(
-      {
-        _id: postId,
-        likesCount: { $gt: 0 },
-      },
-      {
-        $inc: { likesCount: -1 },
-      },
-      { new: true },
-    );
-
-    if (!post) {
-      throw new BadRequestError(
-        "You cannot unlike this post, Firstly you have to like the post",
-      );
-    }
-
-    return;
-  };
+  async exists(userId: string, postId: string) {
+    return LikeModel.exists({ userId, postId });
+  }
 }

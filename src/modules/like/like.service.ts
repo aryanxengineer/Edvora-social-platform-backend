@@ -1,28 +1,58 @@
-import { logger } from "@logger/index.js";
-import type { LikeRepository } from "./like.repository.js";
-import { InternalServerError } from "@common/errors/internal.error.js";
+import mongoose from "mongoose";
+import { LikeRepository } from "./like.repository.js";
+import { PostRepository } from "@modules/post/post.repository.js";
+import { BadRequestError } from "@common/errors/badRequest.error.js";
 
 export class LikeService {
-  constructor(private likeRepository: LikeRepository) {}
+  constructor(
+    private likeRepo: LikeRepository,
+    private postRepo: PostRepository
+  ) {}
 
-  public likePost = async (userId: string, postId: string) => {
+  async likePost(userId: string, postId: string) {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
     try {
-      await this.likeRepository.likePost(userId, postId);
-      return;
-    } catch (error) {
-        logger.error(error);
-        throw new InternalServerError();
-    }
-  };
+      const alreadyLiked = await this.likeRepo.exists(userId, postId);
+      if (alreadyLiked) return; // idempotent
 
-  public unlikePost = async (userId: string, postId: string) => {
+      const post = await this.postRepo.findById(postId);
+      if (!post) {
+        throw new BadRequestError("Post not found");
+      }
+
+      await this.likeRepo.createLike(userId, postId, session);
+
+      await this.postRepo.incrementLikeCount(postId, session);
+
+      await session.commitTransaction();
+    } catch (err) {
+      await session.abortTransaction();
+      throw err;
+    } finally {
+      session.endSession();
+    }
+  }
+
+  async unlikePost(userId: string, postId: string) {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
     try {
-      await this.likeRepository.unlikePost(userId, postId);
-      return;
-    } catch (error) {
-        logger.error(error);
-        throw new InternalServerError();
-    }
-  };
+      const exists = await this.likeRepo.exists(userId, postId);
+      if (!exists) return; // idempotent
 
+      await this.likeRepo.deleteLike(userId, postId, session);
+
+      await this.postRepo.decrementLikeCount(postId, session);
+
+      await session.commitTransaction();
+    } catch (err) {
+      await session.abortTransaction();
+      throw err;
+    } finally {
+      session.endSession();
+    }
+  }
 }
