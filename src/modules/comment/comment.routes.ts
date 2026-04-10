@@ -1,17 +1,26 @@
-import { Router } from 'express';
+import { Router } from "express";
 
-// import { CommentRepository } from "./comment.repository.js";
-// import { CommentController } from "./comment.controller.js";
-// import { CommentService } from "./comment.service.js";
+import { CommentRepository } from "./comment.repository.js";
+import { CommentController } from "./comment.controller.js";
+import { CommentService } from "./comment.service.js";
+import { ProfileRepository } from "@modules/profile/profile.repository.js";
+import { PostRepository } from "@modules/post/post.repository.js";
 
 const commentRouter = Router();
 
 // Dependency Injections for controller
-// const commentRepository = new CommentRepository();
-// const commentService = new CommentService(commentRepository);
-// const commentController = new CommentController(commentService);
+const commentRepository = new CommentRepository();
+const profileRepository = new ProfileRepository();
+const postRepository = new PostRepository();
+const commentService = new CommentService(
+  commentRepository,
+  profileRepository,
+  postRepository,
+);
+const commentController = new CommentController(commentService);
 
-// commentRouter.post("/posts/:postId", commentController.addCommentToPost);
+commentRouter.post("/", commentController.postComment);
+commentRouter.delete("/", commentController.deleteComment);
 // commentRouter.post("/reels/:reelId", commentController.addCommentToReel);
 // commentRouter.get("/:entityId", commentController.getCommentsByEntityId);
 // commentRouter.delete("/:commentId", commentController.deleteComment);
@@ -20,7 +29,6 @@ const commentRouter = Router();
 // commentRouter.post("/:commentId/like", commentController.likeComment);
 
 export default commentRouter;
-
 
 /*
 
