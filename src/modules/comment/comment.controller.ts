@@ -3,6 +3,7 @@ import { CommentService } from "./comment.service.js";
 import { Request, Response } from "express";
 import { sendResponse } from "@common/utils/sendResponse.js";
 import { UnauthorizedError } from "@common/errors/unauthorized.error.js";
+import { BadRequestError } from "@common/errors/badRequest.error.js";
 
 export class CommentController {
   constructor(private commentService: CommentService) {}
@@ -31,15 +32,19 @@ export class CommentController {
 
   public deleteComment = asyncHandler(async (req: Request, res: Response) => {
     const userId = req.session.user?.userId;
-    const { commentId } = req.body;
+    const { commentId } = req.params;
 
     if (!userId) {
       throw new UnauthorizedError();
     }
 
+    if (!commentId) {
+      throw new BadRequestError();
+    }
+
     const result = await this.commentService.deleteComent(commentId, userId);
 
-     return sendResponse({
+    return sendResponse({
       res,
       statusCode: 200,
       message: "Comment deleted successfully",

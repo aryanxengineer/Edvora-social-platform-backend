@@ -1,13 +1,15 @@
 import type { Request, Response } from "express";
+import type { FollowService } from "./follow.service.js";
+
 import { asyncHandler } from "@common/utils/asyncHandler.js";
 import { sendResponse } from "@common/utils/sendResponse.js";
+import { BadRequestError } from "@common/errors/badRequest.error.js";
 import { UnauthorizedError } from "@common/errors/unauthorized.error.js";
-import type { FollowService } from "./follow.service.js";
 
 export class FollowController {
   constructor(private service: FollowService) {}
 
-  follow = asyncHandler(async (req: Request, res: Response) => {
+  public follow = asyncHandler(async (req: Request, res: Response) => {
     const userId = req.session.user?.userId;
     const { targetUserId } = req.body;
 
@@ -22,11 +24,12 @@ export class FollowController {
     });
   });
 
-  unfollow = asyncHandler(async (req: Request, res: Response) => {
+  public unfollow = asyncHandler(async (req: Request, res: Response) => {
     const userId = req.session.user?.userId;
-    const { targetUserId } = req.body;
+    const { targetUserId } = req.params;
 
     if (!userId) throw new UnauthorizedError();
+    if (!targetUserId) throw new BadRequestError();
 
     await this.service.unfollow(userId, targetUserId);
 

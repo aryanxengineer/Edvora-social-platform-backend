@@ -29,4 +29,14 @@ export class PostRepository {
       { session },
     );
   }
+
+  async find(userId: string) {
+    return PostModel.find({ _id: { $ne: userId } });
+  }
+
+  async findByProfileId(followingIds: string[]) {
+    return PostModel.find({
+      profileId: { $in: followingIds },
+    });
+  }
 }

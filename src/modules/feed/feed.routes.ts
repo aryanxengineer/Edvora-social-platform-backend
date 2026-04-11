@@ -1,18 +1,23 @@
 import { Router } from "express";
 
-// import { FeedRepository } from "./feed.repository.js";
-// import { FeedController } from "./feed.controller.js";
-// import { FeedService } from "./feed.service.js";
+import { FeedController } from "./feed.controller.js";
+import { FeedService } from "./feed.service.js";
+import { requireAuth } from "@middlewares/authorization.middleware.js";
+import { PostRepository } from "@modules/post/post.repository.js";
+import { FollowRepository } from "@modules/follow/follow.repository.js";
 
 const feedRouter = Router();
 
 // Dependency Injections for controller
-// const feedRepository = new FeedRepository();
-// const feedService = new FeedService(feedRepository);
-// const feedController = new FeedController(feedService);
+const postRepository = new PostRepository();
+const followRepository = new FollowRepository();
+const feedService = new FeedService(postRepository, followRepository);
+const feedController = new FeedController(feedService);
 
-// feedRouter.get("/home", feedController.getHomeFeed);
-// feedRouter.get("/following", feedController.getFollowingFeed);
+feedRouter.use(requireAuth);
+
+feedRouter.get("/trending", feedController.trending);
+feedRouter.get("/following", feedController.followingFeed);
 // feedRouter.get("/explore", feedController.getExploreFeed);
 // feedRouter.get("/reels", feedController.getReelsFeed);
 // feedRouter.post("/refresh", feedController.refreshFeed);
