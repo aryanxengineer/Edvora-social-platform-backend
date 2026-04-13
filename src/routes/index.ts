@@ -7,6 +7,7 @@ import likeRouter from "@modules/like/like.routes.js";
 import followRouter from "@modules/follow/follow.routes.js";
 import profileRouter from "@modules/profile/profile.routes.js";
 import commentRouter from "@modules/comment/comment.routes.js";
+import feedRouter from "@modules/feed/feed.routes.js";
 
 const indexRouter: Express = express();
 
@@ -17,5 +18,6 @@ indexRouter.use("/follow", followRouter);
 indexRouter.use("/profiles", profileRouter);
 indexRouter.use("/likes", likeRouter);
 indexRouter.use("/comments", commentRouter);
+indexRouter.use("/feeds", feedRouter)
 
 export default indexRouter;

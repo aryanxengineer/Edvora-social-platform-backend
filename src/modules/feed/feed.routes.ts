@@ -5,13 +5,15 @@ import { FeedService } from "./feed.service.js";
 import { requireAuth } from "@middlewares/authorization.middleware.js";
 import { PostRepository } from "@modules/post/post.repository.js";
 import { FollowRepository } from "@modules/follow/follow.repository.js";
+import { ProfileRepository } from "@modules/profile/profile.repository.js";
 
 const feedRouter = Router();
 
 // Dependency Injections for controller
 const postRepository = new PostRepository();
 const followRepository = new FollowRepository();
-const feedService = new FeedService(postRepository, followRepository);
+const profileRepository = new ProfileRepository();
+const feedService = new FeedService(postRepository, followRepository, profileRepository);
 const feedController = new FeedController(feedService);
 
 feedRouter.use(requireAuth);

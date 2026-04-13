@@ -13,7 +13,7 @@ export class FeedController {
       if (!userId) {
         throw new UnauthorizedError();
       }
-      const trendingFeed = this.feedService.trending(userId);
+      const trendingFeed = await this.feedService.trending(userId);
 
       return sendResponse({
         res,

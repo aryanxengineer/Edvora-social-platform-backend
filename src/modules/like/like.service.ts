@@ -6,8 +6,21 @@ import { BadRequestError } from "@common/errors/badRequest.error.js";
 export class LikeService {
   constructor(
     private likeRepo: LikeRepository,
-    private postRepo: PostRepository
+    private postRepo: PostRepository,
   ) {}
+
+  async likes(userId: string, postId: string) {
+
+    const post = await this.postRepo.findById(postId);
+    
+    if (!post) {
+      throw new BadRequestError("Post not found");
+    }
+
+    const likes = await this.likeRepo.find(postId);
+    
+    return likes;
+  }
 
   async likePost(userId: string, postId: string) {
     const session = await mongoose.startSession();

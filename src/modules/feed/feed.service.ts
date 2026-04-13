@@ -1,15 +1,23 @@
 import { NotFoundError } from "@common/errors/notFound.error.js";
 import { PostRepository } from "@modules/post/post.repository.js";
 import { FollowRepository } from "@modules/follow/follow.repository.js";
+import { ProfileRepository } from "@modules/profile/profile.repository.js";
 
 export class FeedService {
   constructor(
     private postRepository: PostRepository,
     private followRepository: FollowRepository,
+    private profileRepository: ProfileRepository,
   ) {}
 
   public trending = async (userId: string) => {
-    const trendingPosts = this.postRepository.find(userId);
+    const profile = await this.profileRepository.findByUserId(userId);
+
+    if (!profile) {
+      throw new NotFoundError("Your profile is not found");
+    }
+
+    const trendingPosts = await this.postRepository.find(profile?._id);
 
     if (!trendingPosts) {
       throw new NotFoundError("Trending posts not found");
@@ -29,8 +37,9 @@ export class FeedService {
       throw new NotFoundError("Following users not found");
     }
 
-    const followingPosts =
-      await this.postRepository.findByProfileId(followingIds as unknown as string[]);
+    const followingPosts = await this.postRepository.findByProfileId(
+      followingIds as unknown as string[],
+    );
 
     return followingPosts;
   };

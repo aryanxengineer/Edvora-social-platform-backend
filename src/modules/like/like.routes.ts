@@ -48,6 +48,7 @@ const controller = new LikeController(service);
 
 likeRouter.use(requireAuth);
 
+likeRouter.get("/:postId", controller.likes);
 likeRouter.post("/:postId", controller.likePost);
 likeRouter.delete("/:postId", controller.unlikePost);
 

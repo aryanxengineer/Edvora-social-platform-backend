@@ -30,8 +30,8 @@ export class PostRepository {
     );
   }
 
-  async find(userId: string) {
-    return PostModel.find({ _id: { $ne: userId } });
+  async find(profileId: string) {
+    return PostModel.find({ profileId: { $ne: profileId } });
   }
 
   async findByProfileId(followingIds: string[]) {
