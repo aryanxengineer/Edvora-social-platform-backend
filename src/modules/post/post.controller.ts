@@ -51,6 +51,23 @@ export class PostController {
     });
   });
 
+  public getProfilePosts = asyncHandler(async (req: Request, res: Response) => {
+    const { profileId } = req.params;
+
+    if (!profileId) {
+      throw new BadRequestError("Post id must be provided in the url");
+    }
+
+    const posts = await this.postService.getProfilePosts(profileId);
+
+    return sendResponse({
+      res,
+      statusCode: 200,
+      message: "Successfully got the single post",
+      data: posts,
+    });
+  });
+
   public deletePost = asyncHandler(async (req: Request, res: Response) => {
     const { postId } = req.params;
 

@@ -3,7 +3,7 @@ import type { ILike } from "./like.types.js";
 
 const likeSchema = new Schema<ILike>(
   {
-    userId: {
+    profileId: {
       type: Schema.Types.ObjectId,
       required: true,
       index: true,

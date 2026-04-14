@@ -43,7 +43,7 @@ const PostSchema = new Schema<IPost>(
       default: "public",
     },
 
-    hashtags: [{ type: String, index: true }],
+    hashtags: [{ type: String }],
     mentions: {
       type: [String],
     },

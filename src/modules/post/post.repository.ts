@@ -6,6 +6,10 @@ export class PostRepository {
     return PostModel.create([data]).then((res) => res[0]);
   }
 
+  async findProfilePosts(profileId: string) {
+    return PostModel.find({ profileId }).select("_id profileId image").lean();
+  }
+
   async findById(postId: string) {
     return PostModel.findById(postId).lean();
   }

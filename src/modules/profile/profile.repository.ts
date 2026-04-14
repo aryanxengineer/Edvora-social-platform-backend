@@ -2,6 +2,11 @@ import mongoose from "mongoose";
 import { ProfileModel } from "./profile.model.js";
 
 export class ProfileRepository {
+
+  async findById(profileId: string) {
+    return ProfileModel.findById(profileId);
+  }
+
   async findByUserId(userId: string) {
     return ProfileModel.findOne({ userId }).lean();
   }

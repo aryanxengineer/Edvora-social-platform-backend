@@ -14,8 +14,9 @@ const postController = new PostController(postService);
 
 postRouter.use(requireAuth);
 
-postRouter.post("/new", uploadImage, postController.createPost);
-postRouter.get("/:postId", postController.getPostById);
+postRouter.post("/", uploadImage, postController.createPost);
+postRouter.get("/post/:postId", postController.getPostById);
+postRouter.get("/:profileId", postController.getProfilePosts);
 postRouter.delete("/:postId", postController.deletePost);
 // postRouter.patch("/:postId", uploadImage, postController.updatePost);
 // postRouter.get("/user/:userId", postController.getPostsByUserId);

@@ -82,6 +82,23 @@ export class PostService {
     return post;
   }
 
+  async getProfilePosts(profileId: string) {
+
+    const profile = await this.profileRepo.findById(profileId);
+
+    if (!profile) {
+      throw new NotFoundError("Profile not found");
+    }
+
+    const posts = await this.postRepo.findProfilePosts(profileId);
+
+    if (!posts) {
+      throw new NotFoundError("Post not found");
+    }
+
+    return posts;
+  }
+
   async deletePost(postId: string) {
     try {
       const post = await this.postRepo.findById(postId);
