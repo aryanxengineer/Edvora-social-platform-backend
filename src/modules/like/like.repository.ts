@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import LikeModel from "./like.model.js";
+import { ILike } from "./like.types.js";
 
 export class LikeRepository {
   async createLike(
@@ -24,9 +25,16 @@ export class LikeRepository {
     return LikeModel.exists({ userId, postId });
   }
 
-  async find(postId: string) {
+  async find(postId: string): Promise<ILike[] | []> {
     return LikeModel.find({
       postId,
     });
+  }
+
+  async findByUserAndPostIds(userId: string, postIds: string[]) {
+    return LikeModel.find({
+      userId,
+      postId: { $in: postIds },
+    }).select("postId");
   }
 }

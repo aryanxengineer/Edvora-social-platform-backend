@@ -27,6 +27,10 @@ const PostSchema = new Schema<IPost>(
       },
     },
 
+    likesCount: {
+      type: Number,
+      default: 0,
+    },
     caption: {
       type: String,
       maxlength: 2200,
@@ -57,7 +61,7 @@ const PostSchema = new Schema<IPost>(
     timestamps: true,
     versionKey: false,
   },
-); 
+);
 
 PostSchema.index({ authorId: 1, createdAt: -1 });
 PostSchema.index({ hashtags: 1, createdAt: -1 });

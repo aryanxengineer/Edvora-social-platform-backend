@@ -29,6 +29,7 @@ export class LikeController {
       data: postLikes
     });
   });
+  
   likePost = asyncHandler(async (req: Request, res: Response) => {
     const userId = req.session.user?.userId;
     const { postId } = req.params;

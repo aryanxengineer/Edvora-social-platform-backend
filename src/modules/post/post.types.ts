@@ -13,6 +13,7 @@ export interface IPost extends Document {
   authorUsernameSnapshot: string;
   authorAvatar: string;
   image: PostImageType;
+  likesCount: number;
   caption?: string;
   title?: string;
   hashtags: string[];

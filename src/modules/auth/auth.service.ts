@@ -30,7 +30,7 @@ export class AuthService {
       password: hashedPassword,
     });
 
-    // ✅ Delegate profile creation
+    
     await this.profileService.createProfile({
       userId: user._id,
       username: user.username,

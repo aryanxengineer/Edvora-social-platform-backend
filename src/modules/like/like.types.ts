@@ -2,7 +2,7 @@ import type mongoose from "mongoose";
 
 export interface ILike {
   _id: string;
-  profileId: mongoose.Types.ObjectId;
+  userId: mongoose.Types.ObjectId;
   postId: mongoose.Types.ObjectId;
   createdAt: Date;
 }

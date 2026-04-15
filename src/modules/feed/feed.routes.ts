@@ -6,14 +6,24 @@ import { requireAuth } from "@middlewares/authorization.middleware.js";
 import { PostRepository } from "@modules/post/post.repository.js";
 import { FollowRepository } from "@modules/follow/follow.repository.js";
 import { ProfileRepository } from "@modules/profile/profile.repository.js";
+import { LikeRepository } from "@modules/like/like.repository.js";
+import { CommentRepository } from "@modules/comment/comment.repository.js";
 
 const feedRouter = Router();
 
 // Dependency Injections for controller
+const likeRepository = new LikeRepository();
 const postRepository = new PostRepository();
 const followRepository = new FollowRepository();
 const profileRepository = new ProfileRepository();
-const feedService = new FeedService(postRepository, followRepository, profileRepository);
+const commentRepository = new CommentRepository();
+const feedService = new FeedService(
+  postRepository,
+  followRepository,
+  profileRepository,
+  likeRepository,
+  commentRepository,
+);
 const feedController = new FeedController(feedService);
 
 feedRouter.use(requireAuth);
@@ -25,7 +35,6 @@ feedRouter.get("/following", feedController.followingFeed);
 // feedRouter.post("/refresh", feedController.refreshFeed);
 
 export default feedRouter;
-
 
 /*
 

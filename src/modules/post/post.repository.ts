@@ -21,7 +21,9 @@ export class PostRepository {
   async incrementLikeCount(postId: string, session?: mongoose.ClientSession) {
     return PostModel.updateOne(
       { _id: postId },
-      { $inc: { likesCount: 1 } },
+      { $inc: { likesCount: 1 },
+    
+    },
       { session },
     );
   }
