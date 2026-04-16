@@ -8,6 +8,30 @@ import { BadRequestError } from "@common/errors/badRequest.error.js";
 export class CommentController {
   constructor(private commentService: CommentService) {}
 
+  public comments = asyncHandler(async (req: Request, res: Response) => {
+    const userId = req.session.user?.userId;
+    const { postId } = req.params;
+
+    if (!userId) {
+      throw new UnauthorizedError();
+    }
+
+    if (!postId) {
+      throw new BadRequestError();
+    }
+
+    const result = await this.commentService.getComments(
+      postId
+    );
+
+    return sendResponse({
+      res,
+      statusCode: 200,
+      message: "Comments fetched successfully",
+      data: result,
+    });
+  });
+
   public postComment = asyncHandler(async (req: Request, res: Response) => {
     const userId = req.session.user?.userId;
     const { postId, content } = req.body;

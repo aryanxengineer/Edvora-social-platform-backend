@@ -35,13 +35,18 @@ export class PostController {
   });
 
   public getPostById = asyncHandler(async (req: Request, res: Response) => {
+    const userId = req.user?.userId;
     const { postId } = req.params;
+
+    if (!userId) {
+      throw new UnauthorizedError();
+    }
 
     if (!postId) {
       throw new BadRequestError("Post id must be provided in the url");
     }
 
-    const post = await this.postService.getPostById(postId);
+    const post = await this.postService.getPostById(userId, postId);
 
     return sendResponse({
       res,

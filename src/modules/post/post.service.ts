@@ -6,9 +6,13 @@ import { deleteAsset, uploadFromBuffer } from "@config/cloudinary.js";
 import { NotFoundError } from "@common/errors/notFound.error.js";
 import { InternalServerError } from "@common/errors/internal.error.js";
 import { BadRequestError } from "@common/errors/badRequest.error.js";
+import { LikeRepository } from "@modules/like/like.repository.js";
+import { CommentRepository } from "@modules/comment/comment.repository.js";
 
 export class PostService {
   constructor(
+    private likeRepo: LikeRepository,
+    private commentRepo: CommentRepository,
     private postRepo: PostRepository,
     private profileRepo: ProfileRepository,
   ) {}
@@ -72,18 +76,27 @@ export class PostService {
     }
   }
 
-  async getPostById(postId: string) {
+  async getPostById(userId: string, postId: string) {
     const post = await this.postRepo.findById(postId);
 
     if (!post) {
       throw new NotFoundError("Post not found");
     }
 
-    return post;
+    const like = await this.likeRepo.exists(userId, postId);
+
+    const comments = await this.commentRepo.find(postId);
+
+    const commentsCount = comments ? comments.length : 0;
+
+    return {
+      ...post,
+      isLiked: like ? true : false,
+      commentsCount: commentsCount
+    };
   }
 
   async getProfilePosts(profileId: string) {
-
     const profile = await this.profileRepo.findById(profileId);
 
     if (!profile) {
@@ -109,7 +122,9 @@ export class PostService {
 
       await this.postRepo.deleteById(postId);
 
-      await this.profileRepo.decrementPostCount(post.profileId as unknown as string);
+      await this.profileRepo.decrementPostCount(
+        post.profileId as unknown as string,
+      );
 
       // external side-effect AFTER DB success
       try {

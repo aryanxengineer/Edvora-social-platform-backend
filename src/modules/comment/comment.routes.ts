@@ -19,6 +19,7 @@ const commentService = new CommentService(
 );
 const commentController = new CommentController(commentService);
 
+commentRouter.get("/:postId", commentController.comments);
 commentRouter.post("/", commentController.postComment);
 commentRouter.delete("/:commentId", commentController.deleteComment);
 // commentRouter.post("/reels/:reelId", commentController.addCommentToReel);

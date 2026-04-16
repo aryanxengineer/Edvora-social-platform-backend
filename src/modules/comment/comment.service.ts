@@ -4,6 +4,7 @@ import { BadRequestError } from "@common/errors/badRequest.error.js";
 import { PostRepository } from "@modules/post/post.repository.js";
 import { InternalServerError } from "@common/errors/internal.error.js";
 import { UnauthorizedError } from "@common/errors/unauthorized.error.js";
+import { NotFoundError } from "@common/errors/notFound.error.js";
 
 export class CommentService {
   constructor(
@@ -11,6 +12,26 @@ export class CommentService {
     private profileRepository: ProfileRepository,
     private postRepository: PostRepository,
   ) {}
+
+  public getComments = async (
+    postId: string,
+  ) => {
+
+    const post = await this.postRepository.findById(postId);
+    if (!post) {
+      throw new BadRequestError("Post not found");
+    }
+
+    const comment = await this.commentRepository.getComments(
+      postId
+    );
+
+    if (!comment) {
+      throw new BadRequestError();
+    }
+
+    return comment;
+  };
 
   public addComment = async (
     postId: string,

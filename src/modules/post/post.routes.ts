@@ -5,11 +5,15 @@ import { PostRepository } from "./post.repository.js";
 import { uploadImage } from "@config/multer.js";
 import { requireAuth } from "@middlewares/authorization.middleware.js";
 import { ProfileRepository } from "@modules/profile/profile.repository.js";
+import { LikeRepository } from "@modules/like/like.repository.js";
+import { CommentRepository } from "@modules/comment/comment.repository.js";
 
 const postRouter = Router();
+const likeRepo = new LikeRepository()
+const commentRepo = new CommentRepository()
 const postRepository = new PostRepository();
 const profileRepository = new ProfileRepository();
-const postService = new PostService(postRepository, profileRepository);
+const postService = new PostService(likeRepo, commentRepo, postRepository, profileRepository);
 const postController = new PostController(postService);
 
 postRouter.use(requireAuth);

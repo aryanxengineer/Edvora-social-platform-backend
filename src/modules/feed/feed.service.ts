@@ -3,7 +3,6 @@ import { PostRepository } from "@modules/post/post.repository.js";
 import { FollowRepository } from "@modules/follow/follow.repository.js";
 import { ProfileRepository } from "@modules/profile/profile.repository.js";
 import { IPost } from "@modules/post/post.types.js";
-import CommentModel from "@modules/comment/comment.model.js";
 import { LikeRepository } from "@modules/like/like.repository.js";
 import { CommentRepository } from "@modules/comment/comment.repository.js";
 

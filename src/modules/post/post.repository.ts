@@ -37,7 +37,7 @@ export class PostRepository {
   }
 
   async find(profileId: string) {
-    return PostModel.find({ profileId: { $ne: profileId } });
+    return PostModel.find({ profileId: { $ne: profileId } }).limit(10);
   }
 
   async findByProfileId(followingIds: string[]) {

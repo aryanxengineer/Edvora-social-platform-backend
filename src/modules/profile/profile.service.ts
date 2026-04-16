@@ -23,5 +23,15 @@ export class ProfileService {
     return this.repo.create(data);
   }
 
+  async getOtherProfile(profileId: string) {
+    const profile = await this.repo.findById(profileId);
+
+    if (!profile) {
+      throw new BadRequestError("Profile not found");
+    }
+
+    return profile;
+  }
+
   
 }

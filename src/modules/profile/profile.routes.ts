@@ -13,5 +13,6 @@ const controller = new ProfileController(service);
 router.use(requireAuth);
 
 router.get("/me", controller.myProfile);
+router.get("/:profileId", controller.otherProfile);
 
 export default router;
