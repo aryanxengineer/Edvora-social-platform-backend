@@ -9,13 +9,30 @@ import { UnauthorizedError } from "@common/errors/unauthorized.error.js";
 export class FollowController {
   constructor(private service: FollowService) {}
 
+  public isFollowed = asyncHandler(async (req: Request, res: Response) => {
+    const userId = req.session.user?.userId;
+    const { profileId } = req.params;
+
+    if (!userId) throw new UnauthorizedError();
+    if (!profileId) throw new UnauthorizedError();
+
+    const result = await this.service.isFollowed(userId, profileId);
+
+    return sendResponse({
+      res,
+      statusCode: 200,
+      message: "Followed successfully",
+      data: result
+    });
+  });
+
   public follow = asyncHandler(async (req: Request, res: Response) => {
     const userId = req.session.user?.userId;
-    const { targetUserId } = req.body;
+    const { targetProfileId } = req.body;
 
     if (!userId) throw new UnauthorizedError();
 
-    await this.service.follow(userId, targetUserId);
+    await this.service.follow(userId, targetProfileId);
 
     return sendResponse({
       res,
@@ -26,12 +43,12 @@ export class FollowController {
 
   public unfollow = asyncHandler(async (req: Request, res: Response) => {
     const userId = req.session.user?.userId;
-    const { targetUserId } = req.params;
+    const { profileId } = req.params;
 
     if (!userId) throw new UnauthorizedError();
-    if (!targetUserId) throw new BadRequestError();
+    if (!profileId) throw new BadRequestError();
 
-    await this.service.unfollow(userId, targetUserId);
+    await this.service.unfollow(userId, profileId);
 
     return sendResponse({
       res,

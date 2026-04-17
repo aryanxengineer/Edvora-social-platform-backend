@@ -15,7 +15,8 @@ const controller = new FollowController(service);
 
 router.use(requireAuth);
 
+router.get("/:profileId", controller.isFollowed);
 router.post("/", controller.follow);
-router.delete("/:targetUserId", controller.unfollow);
+router.delete("/:profileId", controller.unfollow);
 
 export default router;
