@@ -72,4 +72,11 @@ export class ProfileRepository {
       { session },
     );
   }
+
+  async searchQuery(search: string) {
+    return ProfileModel.find({
+      username: { $regex: search }
+    }).select("_id username avatar").limit(10);
+  }
+
 }

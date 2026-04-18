@@ -8,10 +8,11 @@ import followRouter from "@modules/follow/follow.routes.js";
 import profileRouter from "@modules/profile/profile.routes.js";
 import commentRouter from "@modules/comment/comment.routes.js";
 import feedRouter from "@modules/feed/feed.routes.js";
+import searchRouter from "@modules/search/search.routes.js";
 
 const indexRouter: Express = express();
 
-indexRouter.use("/auth", authRouter);
+indexRouter.use("/auth", authRouter); // 3 routes
 indexRouter.use("/users", userRouter);
 indexRouter.use("/posts", postRouter);
 indexRouter.use("/follow", followRouter);
@@ -19,5 +20,6 @@ indexRouter.use("/profiles", profileRouter);
 indexRouter.use("/likes", likeRouter);
 indexRouter.use("/comments", commentRouter);
 indexRouter.use("/feeds", feedRouter)
+indexRouter.use("/search", searchRouter)
 
 export default indexRouter;
