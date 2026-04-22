@@ -46,4 +46,26 @@ export class ProfileController {
       data: profile,
     });
   });
+
+  newAvatar = asyncHandler(async (req: Request, res: Response) => {
+    const userId = req.session.user?.userId;
+    const file = req.file;
+
+    if (!userId) {
+      throw new UnauthorizedError("Unauthorized");
+    }
+
+    if (!file) {
+      throw new BadRequestError("Invalid file");
+    }
+
+    const result = await this.service.newAvatar();
+
+    return sendResponse({
+      res,
+      statusCode: 201,
+      message: "Added new avatar",
+      data: result.url,
+    });
+  });
 }

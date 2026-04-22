@@ -3,6 +3,7 @@ import { ProfileController } from "./profile.controller.js";
 import { ProfileService } from "./profile.service.js";
 import { ProfileRepository } from "./profile.repository.js";
 import { requireAuth } from "@middlewares/authorization.middleware.js";
+import { uploadImage } from "@config/multer.js";
 
 const router = Router();
 
@@ -14,5 +15,6 @@ router.use(requireAuth);
 
 router.get("/me", controller.myProfile);
 router.get("/:profileId", controller.otherProfile);
+router.put("/bio", uploadImage, controller.newAvatar)
 
 export default router;

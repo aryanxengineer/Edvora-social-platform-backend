@@ -33,5 +33,15 @@ export class ProfileService {
     return profile;
   }
 
+  async newAvatar(userId: string, file: Express.Multer.File) {
+    const profile = await this.repo.findById(profileId);
+
+    if (!profile) {
+      throw new BadRequestError("Profile not found");
+    }
+
+    return profile;
+  }
+
   
 }
