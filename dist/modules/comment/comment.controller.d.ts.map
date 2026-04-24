@@ -1,1 +1,0 @@
-{"version":3,"file":"comment.controller.d.ts","sourceRoot":"","sources":["../../../src/modules/comment/comment.controller.ts"],"names":[],"mappings":"AACA,OAAO,EAAE,cAAc,EAAE,MAAM,sBAAsB,CAAC;AACtD,OAAO,EAAE,OAAO,EAAE,QAAQ,EAAE,MAAM,SAAS,CAAC;AAK5C,qBAAa,iBAAiB;IAChB,OAAO,CAAC,cAAc;gBAAd,cAAc,EAAE,cAAc;IAE3C,QAAQ,8EAsBZ;IAEI,WAAW,8EAoBf;IAEI,aAAa,8EAmBjB;CACJ"}

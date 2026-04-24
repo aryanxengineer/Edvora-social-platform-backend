@@ -1,1 +1,0 @@
-{"version":3,"file":"like.schema.d.ts","sourceRoot":"","sources":["../../../src/modules/like/like.schema.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,QAAQ,MAAM,UAAU,CAAC;AAErC,MAAM,WAAW,KAAK;IACpB,GAAG,EAAE,MAAM,CAAC;IACZ,MAAM,EAAE,QAAQ,CAAC,KAAK,CAAC,QAAQ,CAAC;IAChC,MAAM,EAAE,QAAQ,CAAC,KAAK,CAAC,QAAQ,CAAC;IAChC,SAAS,EAAE,IAAI,CAAC;CACjB"}
