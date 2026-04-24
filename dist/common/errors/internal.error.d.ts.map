@@ -1,0 +1,1 @@
+{"version":3,"file":"internal.error.d.ts","sourceRoot":"","sources":["../../../src/common/errors/internal.error.ts"],"names":[],"mappings":"AACA,OAAO,EAAE,QAAQ,EAAE,MAAM,iBAAiB,CAAC;AAE3C,qBAAa,mBAAoB,SAAQ,QAAQ;IAC/C,UAAU,SAAO;IACjB,IAAI,SAA2B;gBAG7B,OAAO,SAA0B,EACjC,OAAO,CAAC,EAAE,OAAO;CAIpB"}

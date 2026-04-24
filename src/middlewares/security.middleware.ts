@@ -1,4 +1,3 @@
-import mongoSanitize from "express-mongo-sanitize";
 import helmet from "helmet";
 import cors from "cors";
 import { type Express } from "express";
@@ -18,7 +17,7 @@ export const applyCors = (app: Express) => {
       // origin: "*",
       origin: (origin, callback) => {
         const allowedOrigins = [
-          "http://localhost:5173",
+          "https://edvora.vercel.app",
           
         ];
 

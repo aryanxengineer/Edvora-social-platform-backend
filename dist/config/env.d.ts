@@ -1,0 +1,2 @@
+export declare const PORT: string, NODE_ENV: string, REDIS_URL: string, REDIS_HOST: string, REDIS_PORT: string, REDIS_PASSWORD: string, MONGO_URI: string, MONGO_RETRY_DELAY: string, MONGO_MAX_RETRIES: string, CLOUDINARY_CLOUD_NAME: string, CLOUDINARY_API_KEY: string, CLOUDINARY_API_SECRET: string, CLOUDINARY_FOLDER: string, SESSION_SECRET: string;
+//# sourceMappingURL=env.d.ts.map
