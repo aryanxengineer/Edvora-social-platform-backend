@@ -1,6 +1,7 @@
 import helmet from "helmet";
 import cors from "cors";
 import { type Express } from "express";
+import { NODE_ENV } from "@config/env.js";
 
 export const applyHelmet = (app: Express) => {
   app.use(
@@ -12,15 +13,15 @@ export const applyHelmet = (app: Express) => {
 };
 
 export const applyCors = (app: Express) => {
+  const allowedOrigins = [
+    "http://localhost:5173", // dev frontend
+    "https://edvora.vercel.app", // prod frontend
+  ];
+
   app.use(
     cors({
       // origin: "*",
       origin: (origin, callback) => {
-        const allowedOrigins = [
-          "https://edvora.vercel.app",
-          
-        ];
-
         // Allow server-to-server & mobile apps
         if (!origin) return callback(null, true);
 

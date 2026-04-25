@@ -20,6 +20,8 @@ node_modules
 *.njsproj
 *.sln
 *.sw?
+dist
+docs/
 
 # env variables
 *.env
