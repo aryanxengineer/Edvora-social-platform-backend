@@ -6,9 +6,13 @@ import { initializeWebSocketServer } from "@config/socket.js";
 import { createServer } from "node:http";
 import { connectRedis } from "@config/redis.js";
 import { logger } from "@logger/index.js";
-import { PORT } from "@config/env.js";
 
 const httpServer = createServer(app);
+
+const PORT =
+  process.env.NODE_ENV === "production"
+    ? process.env.PORT
+    : process.env.PORT || 5000;
 
 initializeWebSocketServer(httpServer);
 
