@@ -1,9 +1,6 @@
 import express, { type Express } from "express";
 
-import {
-  applyCors,
-  applyHelmet,
-} from "@middlewares/security.middleware.js";
+import { applyCors } from "@middlewares/security.middleware.js";
 
 import { absoluteExpirySessionAt } from "@middlewares/absoluteExpiry.middleware.js";
 import { globalErrorHandler } from "@middlewares/error.middleware.js";
@@ -27,7 +24,6 @@ app.set("trust proxy", 1);
  * 2. Security layer (global)
  * -------------------------------
  */
-applyHelmet(app);
 applyCors(app);
 
 /**

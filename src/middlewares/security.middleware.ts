@@ -1,21 +1,10 @@
-import helmet from "helmet";
 import cors from "cors";
 import { type Express } from "express";
-import { NODE_ENV } from "@config/env.js";
-
-export const applyHelmet = (app: Express) => {
-  app.use(
-    helmet({
-      contentSecurityPolicy: false, // handled by frontend CDN
-      crossOriginEmbedderPolicy: false,
-    }),
-  );
-};
 
 export const applyCors = (app: Express) => {
   const allowedOrigins = [
-    "http://localhost:5173", // dev frontend
     "https://edvora-social-platform-frontend.vercel.app/", // prod frontend
+    "http://localhost:5173", // dev frontend
   ];
 
   app.use(
