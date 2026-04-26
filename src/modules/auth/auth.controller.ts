@@ -3,6 +3,7 @@ import { AuthService } from "./auth.service.js";
 import { Request, Response } from "express";
 import { sendResponse } from "@common/utils/sendResponse.js";
 import { UnauthorizedError } from "@common/errors/unauthorized.error.js";
+import { logger } from "@logger/index.js";
 
 export class AuthController {
   constructor(private readonly service: AuthService) {}
@@ -13,6 +14,8 @@ export class AuthController {
     req.session.user = {
       userId: user.id,
     };
+
+    logger.info(req.session.user);
 
     return sendResponse({
       res,
@@ -32,6 +35,8 @@ export class AuthController {
         req.session.user = {
           userId: user.id,
         };
+
+        logger.info(req.session.user);
 
         req.session.save((err) => {
           if (err) return reject(err);
