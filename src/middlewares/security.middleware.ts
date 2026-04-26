@@ -15,7 +15,7 @@ export const applyHelmet = (app: Express) => {
 export const applyCors = (app: Express) => {
   const allowedOrigins = [
     "http://localhost:5173", // dev frontend
-    "https://edvora-virid.vercel.app", // prod frontend
+    "https://edvora-social-platform-frontend.vercel.app/", // prod frontend
   ];
 
   app.use(
