@@ -3,7 +3,7 @@ import { type Express } from "express";
 
 export const applyCors = (app: Express) => {
   const allowedOrigins = [
-    "https://edvora-social-platform-frontend.vercel.app",
+    "https://edvora-social.vercel.app",
     "http://localhost:5173",
   ];
 
